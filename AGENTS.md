@@ -33,6 +33,24 @@ This repository is a coordination workspace, not a product-code repository.
 - Propose edits to this file, skill instructions, profile preferences, or
   `automations/heartbeat.md`; do not silently rewrite them.
 
+## Private backup and public-starter sync
+
+- Commit every approved vault change and push `main` to a private backup
+  repository. A change is not fully backed up until the remote `main` SHA
+  matches local `main`.
+- When a maintainer changes reusable Chief behavior, instructions, skills,
+  templates, automation patterns, or task conventions, create a separate Terra
+  Codex task titled `CoS · Sync public starter`.
+- That task starts from the public starter, ports only the generic sanitized
+  change, audits for private data, and verifies the public remote after push.
+  Never mechanically mirror a private vault into a public starter.
+- Routine private project status, check-ins, people, messages, source links,
+  credentials, task identifiers, and internal URLs never belong in the public
+  starter. Routine private updates require a private backup, not a public-sync
+  task.
+- This rule is for maintainers of a public starter. Ordinary private-vault
+  users do not need to maintain a public template.
+
 ## Worker task rules
 
 - Create a Codex worker task only after explicit user authorization in the
@@ -43,7 +61,19 @@ This repository is a coordination workspace, not a product-code repository.
   requests or the work requires the local checkout.
 - Give each worker one outcome, scope, non-goals, validation, expected result,
   and the completion contract in `templates/thread.md`.
-- Record a created worker immediately in `threads/index.md`.
+- Keep independent review proportional: use no reviewer for small, low-risk
+  work and at most one by default for non-trivial or risky work. Use more than
+  one only when the user explicitly requests it or distinct high-stakes failure
+  modes clearly justify it.
+- After every successful `create_thread`, immediately call
+  `set_thread_title` with `CoS · <outcome>`; never rely on Codex's generated
+  title. If worktree setup first returns only a client task ID, resolve the
+  real task ID and apply the title before reporting dispatch complete.
+- Record a created worker immediately in `threads/index.md`, including its
+  exact `CoS ·` title and that it was Chief-created.
+- When a push is explicitly authorized, prefer the narrow non-force form
+  `git push origin <branch>`. Do not combine the push with upstream tracking or
+  unrelated Git configuration unless it is required.
 - Archive a worker only after its result is recorded in the vault.
 
 ## Actions requiring explicit approval

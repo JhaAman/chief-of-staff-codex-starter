@@ -33,9 +33,25 @@ responsibilities, source identifiers, project state, and local paths. Do not
 populate a public fork or push your filled vault back to this template.
 
 Step 1 disconnects the public template remote before onboarding. Local Git
-history still works. If you later want remote backup, create a separate
-**private** repository, verify its visibility before adding it as a remote, and
-audit every staged change before pushing.
+history still works. Create a separate **private** repository for backup,
+verify its visibility before adding it as a remote, and audit every staged
+change before pushing.
+
+Every approved vault change should be committed and pushed to that private
+backup. Treat the backup as complete only when its `main` matches your local
+`main`. Before approving any personal vault update, add a verified private
+backup remote:
+
+```bash
+git remote add backup YOUR_PRIVATE_BACKUP_URL
+git push backup main
+git fetch backup
+git rev-parse HEAD
+git rev-parse backup/main
+```
+
+The last two SHAs must match. Audit staged changes before every later private
+backup push.
 
 ## Set up your Chief of Staff
 
@@ -148,7 +164,8 @@ Review the diff. Correct anything wrong, then send:
 
 ```text
 I approve the current vault diff. Create one conventional commit for these
-approved vault changes and report the commit SHA.
+approved vault changes, push `main` to the private backup, verify the remote
+`main` SHA matches local `main`, and report the commit SHA.
 ```
 
 Do not commit credentials, copied conversations, private transcripts, or source
@@ -182,8 +199,9 @@ In the pinned Chief task, send:
 Use $check-in for the first manual Chief of Staff refresh.
 
 Read only the sources approved in sources/index.md plus current approved Codex
-worker state. Update durable vault facts and create a conventional vault commit
-only if something material changed.
+worker state. Update durable vault facts and, only if something material
+changed, create a conventional vault commit, push `main` to the private backup,
+and verify the remote `main` SHA matches local `main`.
 
 Do not create workers, send Slack or email, post comments, merge, deploy,
 connect apps, or create or activate an automation. Report access gaps, noisy
@@ -243,7 +261,10 @@ Use $chief-of-staff. I explicitly authorize one worker task to implement
 
 Use a separate Codex task and a worktree. Give it one outcome, scope,
 non-goals, validation, and a completion-report contract. Record it immediately
-in threads/index.md.
+in threads/index.md as Chief-created, with its exact `CoS · <outcome>` title.
+Immediately after `create_thread`, set that visible title with
+`set_thread_title`; if worktree setup is queued, resolve the real task ID and
+set the title before reporting dispatch complete.
 
 Do not create additional workers, install or connect apps, create or change
 automations, send messages, post comments, open or publish a pull request,
@@ -300,6 +321,19 @@ starting branch, paste the prompt, and return the new task link to the Chief for
 - Store concise facts and source links, not transcripts or copied source
   content.
 - Review Git diffs before sharing or backing up the vault.
+
+## Maintaining a public starter (maintainers only)
+
+Most users need only a private vault and private backup; they do not need to
+maintain a public template. If you do maintain a public starter and change a
+reusable Chief behavior, instruction, skill, template, automation pattern, or
+task convention, create a separate Terra Codex task titled `CoS · Sync public
+starter`. Start from the public repository and port only the generic sanitized
+change. Audit it for private data and verify the public remote after pushing.
+
+Never mechanically mirror a private vault. Personal project status, check-ins,
+people, messages, source links, credentials, task identifiers, and internal
+URLs stay private.
 
 ## Current Codex references
 

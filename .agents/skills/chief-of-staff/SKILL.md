@@ -26,15 +26,30 @@ ambiguous.
    note, `threads/index.md`, and `templates/thread.md`.
 2. Resolve the destination from the saved Codex project list and project
    registry.
-3. Create one separate Codex task for durable implementation.
-4. For Git coding, use a worktree unless the user requests or the task requires
+3. Keep independent review proportional in the worker prompt: use no reviewer
+   for small, low-risk work and at most one by default for non-trivial or risky
+   work. More than one requires explicit user direction or clearly distinct
+   high-stakes failure modes.
+4. Create one separate Codex task for durable implementation with
+   `create_thread`, then immediately call `set_thread_title` with
+   `CoS · <outcome>`. Never rely on Codex's generated title. If worktree setup
+   returns only a client task ID, resolve the real task ID and make setting the
+   visible title the first metadata action. Do not report dispatch complete
+   until the title is set.
+5. For Git coding, use a worktree unless the user requests or the task requires
    the local checkout.
-5. Give the worker one outcome, context, scope, non-goals, validation, expected
+6. Give the worker one outcome, context, scope, non-goals, validation, expected
    result, safety boundaries, and the completion-report contract from
    `templates/thread.md`. Carry every approval gate into the worker prompt
    because this vault's `AGENTS.md` may not apply in the destination project.
-6. Record the task immediately in `threads/index.md`.
-7. Update the relevant project note with the dependency and next action.
+7. Record the task immediately in `threads/index.md`, including its exact
+   `CoS ·` title and Chief-created origin.
+8. Update the relevant project note with the dependency and next action.
+
+When an explicitly authorized workflow requires a direct push, prefer the
+narrow non-force command `git push origin <branch>`. Do not add
+`--set-upstream` or combine unrelated Git configuration changes unless
+required.
 
 Do not create additional workers, send messages, post comments, open or publish
 a pull request, merge, deploy, delete, force-push, connect apps, activate or

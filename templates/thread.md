@@ -3,6 +3,8 @@
 - Authorized by:
 - Authorization date: YYYY-MM-DD
 - Task:
+- Visible title: CoS · <outcome>
+- Origin: Chief-created | manual
 - Project:
 - Saved Codex project:
 - Repository:
