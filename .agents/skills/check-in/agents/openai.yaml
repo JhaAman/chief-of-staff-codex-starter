@@ -1,0 +1,7 @@
+interface:
+  display_name: "Chief of Staff Check-In"
+  short_description: "Refresh approved sources and update durable vault state"
+  default_prompt: "Use $check-in for a scoped Chief of Staff refresh."
+
+policy:
+  allow_implicit_invocation: false

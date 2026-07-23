@@ -1,0 +1,7 @@
+interface:
+  display_name: "Bootstrap Chief of Staff"
+  short_description: "Interview one question at a time and propose a vault"
+  default_prompt: "Use $bootstrap-chief-of-staff to interview me and propose my vault."
+
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Chief of Staff Worker Dispatch"
+  short_description: "Create or manage one explicitly authorized Codex worker"
+  default_prompt: "Use $chief-of-staff for one explicitly authorized worker outcome."
+
+policy:
+  allow_implicit_invocation: false
