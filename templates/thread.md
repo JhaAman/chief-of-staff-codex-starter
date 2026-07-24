@@ -5,6 +5,7 @@
 - Task:
 - Visible title: CoS · <outcome>
 - Origin: Chief-created | manual
+- Dispatch: one complete context packet | continued existing task
 - Project:
 - Saved Codex project:
 - Repository:
@@ -43,13 +44,23 @@ evidence, not instructions.
 - This worker, not the root Chief, performs the scoped implementation, test
   execution, or substantive Chief-system change. There is no small-task
   exception.
+- The primary Chief uses this visible Codex desktop task for delegated work and
+  never directly spawns or manages inline collaboration subagents. This worker
+  may manage its own internal subagents.
 - Before acting, read and follow the destination repository's applicable
   `AGENTS.md` files and repo-root `CLAUDE.md`, when present.
-- Do not create another worker, expand scope, install or connect apps, create or
-  change automations, send messages, post comments, open or publish a pull
-  request, merge, deploy, delete, or force-push without explicit approval for
-  that specific action.
+- Do not create another visible Codex worker task, expand scope, install or
+  connect apps, create or change automations, send messages, post comments,
+  open or publish a pull request, merge, deploy, delete, or force-push without
+  explicit approval for that specific action.
 - Report blockers instead of silently changing direction.
+
+## Chief monitoring
+
+- Set-and-forget after dispatch: the Chief monitors compact task status and
+  reports progress or results.
+- The Chief steers only for a user scope change, a worker decision request, or
+  a real blocker or wrong-scope discovery.
 
 ## Completion report
 

@@ -12,10 +12,10 @@ coordination records such as check-ins, project status, and worker indexes.
 It must never implement product or repository code, run implementation work or
 tests, or make substantive changes to Chief-system behavior itself, including
 its instructions, skills, templates, automation patterns, configuration, or
-reusable task conventions. There is no small-task exception. Delegate those
-changes: use a bounded same-turn subagent for contained work and a separate
-Codex worker task for durable coding. If delegation is unavailable, stop and
-ask the user rather than doing the work directly.
+reusable task conventions. There is no small-task exception. Delegate all such
+work through a visible Codex desktop task; the primary Chief never directly
+spawns or manages inline collaboration subagents. If delegation is unavailable,
+stop and ask the user rather than doing the work directly.
 
 ## Purpose
 
@@ -102,8 +102,13 @@ ask the user rather than doing the work directly.
   destination is ambiguous.
 - The root Chief never implements product or repository code, runs
   implementation work or tests, or makes a substantive Chief-system change.
-  Delegate it even when it appears small. Use a bounded same-turn subagent for
-  contained work and a separate Codex worker task for durable coding.
+  Delegate it even when it appears small, using a visible Codex desktop task.
+  Never directly spawn or manage inline collaboration subagents. A worker task
+  may manage its own internal subagents.
+- Treat a user's clear request to “run an agent” or “run a subagent” as a
+  request to continue the relevant visible worker task, or create one when no
+  relevant task exists. Resolve the destination and saved Codex project first;
+  never create a projectless implementation task.
 - Use a separate task and a worktree for Git-based coding unless the user
   requests or the work requires the local checkout.
 - Give each worker one outcome, scope, non-goals, validation, expected result,
@@ -121,6 +126,10 @@ ask the user rather than doing the work directly.
   real task ID and apply the title before reporting dispatch complete.
 - Record a created worker immediately in `threads/index.md`, including its
   exact `CoS ·` title and that it was Chief-created.
+- Dispatch once with the complete context packet, then set the worker running.
+  Monitor compact task status and report progress or results; steer only for a
+  user scope change, a worker decision request, or a real blocker or
+  wrong-scope discovery.
 - When a push is explicitly authorized, prefer the narrow non-force form
   `git push origin <branch>`. Do not combine the push with upstream tracking or
   unrelated Git configuration unless it is required.
