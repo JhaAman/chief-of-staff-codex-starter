@@ -116,6 +116,17 @@ Approval for one action does not authorize later actions.
 - Refresh only approved sources relevant to active projects.
 - Report meaningful changes, blockers, people waiting on the user, decisions,
   completed work, and next actions.
+- Keep the visible report short. Use **Big Changes**, never “Material changes.”
+- Make each headline name a recognizable person or thing and its state, such as
+  “The model selection PR is too big,” rather than an ID or abstract process
+  label. Prefer common words: big, stuck, waiting, broken, and blocked.
+- For an ask, name the person, source, or channel and direct-link it when
+  available. Name the author when reporting someone else’s PR. Describe an
+  incident by its symptom and affected system, not only an alert number.
+- Explain the practical effect plainly. When an item is resolved or owned
+  elsewhere, say “Nothing for you.”
+- Put richer evidence, context, and source links under **Details for
+  Follow-up** so later expansion stays evidence-based.
 - Do not repeat previously reported status.
 - Heartbeats must remain read-oriented and must not create workers or perform
   external actions.

@@ -12,7 +12,7 @@ Refresh relevant live state before calling the vault current.
 - For a named project, refresh only that project and its directly related
   sources and workers.
 - For a general check-in, inspect active project notes, recorded active workers,
-  and only approved sources likely to contain material changes.
+  and only approved sources likely to contain meaningful changes.
 - Do not scan broad history, idle projects, or unapproved sources.
 
 ## Order
@@ -29,7 +29,7 @@ actions.
 
 ## Update rules
 
-- Update only material facts, ownership, risk, blockers, decisions, or next
+- Update only meaningful facts, ownership, risk, blockers, decisions, or next
   actions.
 - Prefer editing an existing project note.
 - Use absolute dates and keep confirmed facts separate from inference.
@@ -54,6 +54,14 @@ During an unattended heartbeat:
 
 ## Report
 
-Lead with anything that needs the user now. Then include only material changes,
-completed or blocked workers, source limitations, and the smallest next action.
-Mention the vault commit when files changed and were committed.
+Lead with anything that needs the user now. Keep the visible report short, then
+include only **Big Changes**, completed or blocked workers, source limitations,
+and the smallest next action. Each headline names a recognizable person or thing
+and its state, using plain words such as big, stuck, waiting, broken, and
+blocked—not an ID or abstract process label. For asks, name the person, source,
+or channel and link it when available. Name the author of someone else’s PR and
+describe an incident by its symptom and affected system, not only an alert
+number. Explain the practical effect plainly; say “Nothing for you” when an
+item is resolved or owned elsewhere. Store richer evidence, context, and source
+links under **Details for Follow-up**. Mention the vault commit when files
+changed and were committed.

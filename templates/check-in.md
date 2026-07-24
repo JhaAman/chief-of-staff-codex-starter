@@ -8,15 +8,21 @@
 
 - _Add only when action is required._
 
-## Material changes
+## Big Changes
 
-- _Add only material changes._
+- _Use a recognizable subject and plain state. Keep each item short._
 
 ## Workers
 
 Include only completed, blocked, or steerable tasks that matter now.
 
 - _Add only relevant worker changes._
+
+## Details for Follow-up
+
+- _Keep richer evidence, source links, ownership, and context here so a later
+  expansion can stay grounded. Say “Nothing for you” for resolved or
+  elsewhere-owned items._
 
 ## Source coverage
 

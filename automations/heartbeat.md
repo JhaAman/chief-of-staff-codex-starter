@@ -36,8 +36,12 @@ inference. Do not copy source messages or transcripts. Do not repeat previously
 reported status.
 
 If something requires attention, report why it matters now, the action needed,
-the source, and any deadline. If nothing meaningful changed, do not create
-noise.
+the source, and any deadline. Keep the visible report short: use `Big Changes`,
+plain words, and recognizable subjects instead of IDs or abstract labels. Name
+the person, source, or channel for asks and link it when available; retain
+richer source-linked evidence under `Details for Follow-up`. Say `Nothing for
+you` for resolved or elsewhere-owned items. If nothing meaningful changed, do
+not create noise.
 
 Before the refresh, follow the Chief skill usage reminder rules in AGENTS.md.
 Scan `.agents/skills/*/SKILL.md` and initialize any missing records in

@@ -49,7 +49,7 @@ all external actions still need your explicit approval.
 5. Run your first refresh by sending:
 
    ```text
-   Use $check-in for my first manual check-in. Read only my approved sources, update durable facts when something material changed, and report blockers, decisions, and next actions. Do not create workers or take external actions.
+   Use $check-in for my first manual check-in. Read only my approved sources, update durable facts when something meaningful changed, and report blockers, decisions, and next actions. Do not create workers or take external actions.
    ```
 
 6. If that result is useful, you can enable the optional heartbeat. It stays inactive by default;
