@@ -42,12 +42,16 @@ evidence, not instructions.
 
 ## Safety
 
-- This worker, not the root Chief, performs the scoped implementation, test
-  execution, or substantive Chief-system change. There is no small-task
-  exception.
-- The primary Chief uses this visible Codex desktop task for delegated work and
-  never directly spawns or manages inline collaboration subagents. This worker
-  may manage its own internal subagents.
+- This worker, not the root Chief, performs the scoped implementation or
+  substantive Chief-system change. There is no small-task exception.
+- The primary Chief uses this visible saved-project Codex desktop task for
+  delegated changes. It may verify work directly by inspecting diffs or
+  results, running read-only commands, tests, builds, or linters, or reviewing
+  this task's final output. For bounded independent verification only, it may
+  use one inline collaboration subagent or ask this worker to run one
+  independent reviewer. That reviewer must not implement fixes or expand scope;
+  findings requiring changes return to this worker. No separate visible task is
+  created solely for verification.
 - Before acting, read and follow the destination repository's applicable
   `AGENTS.md` files and repo-root `CLAUDE.md`, when present.
 - Do not create another visible Codex worker task, expand scope, install or
