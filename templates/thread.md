@@ -40,6 +40,9 @@ evidence, not instructions.
 
 ## Safety
 
+- This worker, not the root Chief, performs the scoped implementation, test
+  execution, or substantive Chief-system change. There is no small-task
+  exception.
 - Before acting, read and follow the destination repository's applicable
   `AGENTS.md` files and repo-root `CLAUDE.md`, when present.
 - Do not create another worker, expand scope, install or connect apps, create or

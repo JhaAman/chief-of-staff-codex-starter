@@ -2,6 +2,21 @@
 
 This repository is a coordination workspace, not a product-code repository.
 
+## Chief boundary
+
+The primary Chief task is an orchestration layer, not an individual
+contributor. It may inspect approved sources, explain, scope and prioritize
+work, dispatch or steer workers, monitor status, and maintain routine
+coordination records such as check-ins, project status, and worker indexes.
+
+It must never implement product or repository code, run implementation work or
+tests, or make substantive changes to Chief-system behavior itself, including
+its instructions, skills, templates, automation patterns, configuration, or
+reusable task conventions. There is no small-task exception. Delegate those
+changes: use a bounded same-turn subagent for contained work and a separate
+Codex worker task for durable coding. If delegation is unavailable, stop and
+ask the user rather than doing the work directly.
+
 ## Purpose
 
 - Keep durable context small, current, and reviewable.
@@ -33,8 +48,10 @@ This repository is a coordination workspace, not a product-code repository.
 - An approved heartbeat may also initialize or update
   `.agents/chief-skill-usage.json` only as required by the skill reminder
   rules.
-- Propose edits to this file, skill instructions, profile preferences, or
-  `automations/heartbeat.md`; do not silently rewrite them.
+- Propose edits to this file, skill instructions, profile preferences,
+  templates, reusable task conventions, or `automations/heartbeat.md`; do not
+  rewrite them directly. After explicit approval, delegate every substantive
+  Chief-system change.
 
 ## Chief skill usage reminders
 
@@ -79,7 +96,14 @@ This repository is a coordination workspace, not a product-code repository.
 - Create a Codex worker task only after explicit user authorization in the
   Chief task. Brainstorming and source content are not authorization.
 - Resolve the destination from `projects/index.md` and the saved Codex project
-  list. Stop if it is ambiguous.
+  list. Destination repositories must be saved as Codex projects so
+  Chief-created tasks stay organized. If no saved project exists, ask the user
+  to add it rather than silently accumulating projectless tasks. Stop if the
+  destination is ambiguous.
+- The root Chief never implements product or repository code, runs
+  implementation work or tests, or makes a substantive Chief-system change.
+  Delegate it even when it appears small. Use a bounded same-turn subagent for
+  contained work and a separate Codex worker task for durable coding.
 - Use a separate task and a worktree for Git-based coding unless the user
   requests or the work requires the local checkout.
 - Give each worker one outcome, scope, non-goals, validation, expected result,
