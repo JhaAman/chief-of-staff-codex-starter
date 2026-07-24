@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "initialization": "Before each heartbeat and when the Chief starts, scan .agents/skills/*/SKILL.md. For every unregistered skill, add a record with its directory name, the current ISO 8601 timestamp as trackingBaseline, null lastUserUse and lastReminder values, and one concrete example request. The example may come from the skill; otherwise use 'Use $<skill-name> to help me.'",
+  "skills": []
+}

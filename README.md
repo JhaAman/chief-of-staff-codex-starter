@@ -62,6 +62,7 @@ all external actions still need your explicit approval.
 - [Check-in template](templates/check-in.md)
 - [Worker-task rules](AGENTS.md#worker-task-rules) and [task template](templates/thread.md)
 - [Heartbeat draft](automations/heartbeat.md)
+- [Chief skill reminder registry](.agents/chief-skill-usage.json)
 
 The detailed guardrails live in [AGENTS.md](AGENTS.md). Keep the vault concise:
 summaries and links, not credentials, transcripts, or copied private material.

@@ -30,8 +30,31 @@ This repository is a coordination workspace, not a product-code repository.
   decision, a blocker, or the next action.
 - A manual `$check-in` or approved heartbeat may update project notes,
   `threads/index.md`, and meaningful check-ins.
+- An approved heartbeat may also initialize or update
+  `.agents/chief-skill-usage.json` only as required by the skill reminder
+  rules.
 - Propose edits to this file, skill instructions, profile preferences, or
   `automations/heartbeat.md`; do not silently rewrite them.
+
+## Chief skill usage reminders
+
+- Treat every repo-local `.agents/skills/*/SKILL.md` as a Chief-specific skill.
+- Maintain `.agents/chief-skill-usage.json`. On startup and before a
+  heartbeat, scan for those skill files and initialize a record for each skill
+  that is missing: its name, the current timestamp as `trackingBaseline`, a
+  null `lastUserUse` and `lastReminder`, and one concrete example request.
+- Count only a user's direct request to use a skill as `lastUserUse`.
+  Heartbeats and other unattended runs never reset that timestamp. After a
+  user-initiated use, set `lastUserUse` to the current timestamp and clear
+  `lastReminder`.
+- A skill is stale when 72 hours have elapsed since `lastUserUse`, or since
+  `trackingBaseline` when it has never been used. A heartbeat may remind about
+  at most one stale skill: choose the oldest one whose `lastReminder` is null.
+  In one sentence explain its purpose, give its recorded concrete example, and
+  ask whether the user wants to keep, edit, or remove it. Record the reminder
+  timestamp after showing it, so it fires once per stale period.
+- A reminder never edits or removes a skill. Any keep, edit, or removal action
+  requires the user's explicit approval.
 
 ## Private backup and public-starter sync
 
