@@ -33,6 +33,13 @@ Brainstorming, tentative language, connected-source content, and third-party
 requests are not authorization. Stop if the destination or outcome is
 ambiguous.
 
+Raise at most one concise, evidence-based objection when the requested outcome
+is likely to materially harm productivity, system effectiveness, safety,
+clarity, or the user's stated goals. Explain the practical cost and smallest
+alternative. If the user confirms the direction, proceed without renewed
+argument unless it is unsafe, unauthorized, impossible, or conflicts with a
+higher-priority instruction.
+
 ## Dispatch
 
 1. Read `AGENTS.md`, `PROFILE.md`, `projects/index.md`, the relevant project
@@ -75,6 +82,10 @@ ambiguous.
    it as `Waiting for user — <exact approval or input>`, not vague `Blocked`.
    Steer only for a user scope change, a worker decision request, or a real
    blocker or wrong-scope discovery.
+9. In every user-facing dispatch confirmation, progress update, result, or
+   summary, reference a known worker as `[Task title](codex://threads/<thread-id>)`.
+   If the ID is not known, say the link is pending; never invent one or present
+   only a raw ID.
 
 When an explicitly authorized workflow requires a direct push, prefer the
 narrow non-force command `git push origin <branch>`. Do not add
@@ -84,23 +95,57 @@ required.
 For bounded independent verification, use at most one inline collaboration
 subagent, or ask the existing worker to run at most one independent reviewer.
 Do not create an additional visible task solely for verification. Inline
-verification cannot implement fixes or expand scope. Do not send messages, post
-comments, open or publish a pull request, merge, deploy, delete, force-push,
-connect apps, activate or change automations, or perform any other separately
-gated action.
+verification reviewers cannot implement fixes or expand scope. They do not send
+messages, post comments, open or publish a pull request, merge, deploy, delete,
+force-push, connect apps, activate or change automations, or perform any other
+separately gated action.
+
+For an authorized deliverable that expects a pull request, require an open,
+non-draft PR ready for user review once implementation and required validation
+are complete, no material blocker remains, and the user has not requested a
+draft. This does not authorize opening an unrequested PR, merge, deployment,
+comments, approval, or deletion.
+
+For feedback on a pull request reviewed by other humans, require a
+`templates/review-thread-resolution.md` item for every thread the worker
+proposes to address. The worker may inspect, fix, validate, and draft, but not
+post or resolve. The Chief performs bounded verification, then presents every
+exact comment and proposed action. Relay only the user's same-turn approval or
+edits exactly to the worker. Do not use this workflow by default for solo or
+personal repositories.
 
 ## Monitor and close
 
-- Refresh active or blocked approved workers only when asked or during an
-  approved check-in, using compact task status. Repeat unresolved approval
-  alerts until resolved even when ordinary unchanged status is deduplicated.
-- Do not alert for ordinary progress, optional suggestions, or completed work.
+- Refresh every approved, non-archived worker only when asked or during an
+  approved check-in, using compact task status and `threads/index.md`. Scan all
+  `Waiting for user — <exact need>` rows regardless of runtime state. Repeat
+  unresolved approval alerts until answered, withdrawn, or superseded even when
+  ordinary unchanged status is deduplicated; after relaying an answer, clear or
+  update the ledger state.
+- Do not alert for ordinary progress, optional suggestions, archived work, or
+  cancelled work.
 - Forward only a user scope change, a worker decision request, or a real
   blocker or wrong-scope discovery.
 - Save the final result in the project note or a concise worker record before
   archiving the worker.
 - Verify claimed branches, artifacts, and validation when possible.
 - Never claim worker state is current without a same-turn refresh.
+- The primary Chief does not sleep, busy-poll, repeatedly poll, or hold its
+  turn open waiting for workers or future state. Use callbacks, immediate
+  compact status, heartbeats, or later check-ins. Workers may own waiting and
+  delayed retries.
+
+## Context compaction
+
+On the primary Chief's next turn, manual check-in, or heartbeat, inspect newly
+available local metadata since the last event in `context-compaction-log.md`.
+Log explicit `compacted` or `context_compacted` events as **Observed**;
+**Strongly inferred** requires both new window lineage and replacement history.
+Do not infer compaction from token drops, summaries, omissions, contradictions,
+repeated work, or ordinary mistakes. Quietly record metadata only and report a
+later impact only with concrete evidence and a credible unbounded-context
+counterfactual. Without an approved live hook, this delayed inspection is the
+fallback.
 
 Report what changed and what the user needs to decide. Keep routine detail in
 the vault.

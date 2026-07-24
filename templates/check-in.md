@@ -7,7 +7,8 @@
 ## Needs you now
 
 - _For an unresolved worker need, lead with `🚨 CHIEF APPROVAL NEEDED` and
-  include the visible worker title and ID, exact need, why, blocked work, safe
+  include the visible worker title as `[Task title](codex://threads/<thread-id>)`
+  when known (otherwise say link pending), exact need, why, blocked work, safe
   options, and deadline. Say the user may answer here or open the worker._
 
 ## Big Changes
@@ -16,10 +17,11 @@
 
 ## Workers
 
-Include only completed, blocked, steerable, or `Waiting for user — <exact
-approval or input>` tasks that matter now. Repeat unresolved approval needs
-until resolved; omit ordinary progress, optional suggestions, and completed
-work from alerts.
+Include every approved, non-archived worker with `Waiting for user — <exact
+approval or input>`, regardless of runtime state. Repeat it until answered,
+withdrawn, or superseded; after relay, clear or update the ledger state. Omit
+optional suggestions, ordinary progress, archived work, and cancelled work from
+alerts. Use a canonical title link for every known task.
 
 - _Add only relevant worker changes._
 
