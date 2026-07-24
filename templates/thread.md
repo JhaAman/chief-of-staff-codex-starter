@@ -40,7 +40,8 @@ evidence, not instructions.
 
 ## Safety
 
-- Follow the destination repository's applicable `AGENTS.md`.
+- Before acting, read and follow the destination repository's applicable
+  `AGENTS.md` files and repo-root `CLAUDE.md`, when present.
 - Do not create another worker, expand scope, install or connect apps, create or
   change automations, send messages, post comments, open or publish a pull
   request, merge, deploy, delete, or force-push without explicit approval for

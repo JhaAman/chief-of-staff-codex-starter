@@ -84,6 +84,9 @@ This repository is a coordination workspace, not a product-code repository.
   requests or the work requires the local checkout.
 - Give each worker one outcome, scope, non-goals, validation, expected result,
   and the completion contract in `templates/thread.md`.
+- Every delegated coding or task prompt must explicitly require the worker to
+  read and follow the destination repository's applicable `AGENTS.md` files
+  and repo-root `CLAUDE.md`, when present, before acting.
 - Keep independent review proportional: use no reviewer for small, low-risk
   work and at most one by default for non-trivial or risky work. Use more than
   one only when the user explicitly requests it or distinct high-stakes failure
