@@ -57,13 +57,24 @@ ambiguous.
    non-goals, validation, expected result, safety boundaries, and the
    completion-report contract from `templates/thread.md`. Carry every approval
    gate into the worker prompt because this vault's `AGENTS.md` may not apply
-   in the destination project.
+   in the destination project. Include the source Chief task ID and callback
+   contract. Assume the user does not routinely read or interact with the
+   worker. When it needs user approval, input, access, or a decision, it sends
+   the source Chief a callback with its visible title and ID, exact need, why,
+   blocked work, safe options, and deadline. Use Codex task messaging when
+   available; otherwise require the machine-detectable `NEEDS_USER` structure
+   from `templates/thread.md`. Silence is never approval, and a callback does
+   not broaden authority.
 7. Record the task immediately in `threads/index.md`, including its exact
    `CoS ·` title and Chief-created origin.
 8. Update the relevant project note with the dependency and next action. Then
    set the task running and leave it set-and-forget: monitor compact task status
-   and report progress or results. Steer only for a user scope change, a worker
-   decision request, or a real blocker or wrong-scope discovery.
+   and report progress or results. When a callback arrives, immediately display
+   `🚨 CHIEF APPROVAL NEEDED`, tell the user they may answer in the Chief task
+   or open the worker, and relay the answer exactly back to the worker. Track
+   it as `Waiting for user — <exact approval or input>`, not vague `Blocked`.
+   Steer only for a user scope change, a worker decision request, or a real
+   blocker or wrong-scope discovery.
 
 When an explicitly authorized workflow requires a direct push, prefer the
 narrow non-force command `git push origin <branch>`. Do not add
@@ -80,8 +91,10 @@ gated action.
 
 ## Monitor and close
 
-- Refresh active workers only when asked or during an approved check-in, using
-  compact task status.
+- Refresh active or blocked approved workers only when asked or during an
+  approved check-in, using compact task status. Repeat unresolved approval
+  alerts until resolved even when ordinary unchanged status is deduplicated.
+- Do not alert for ordinary progress, optional suggestions, or completed work.
 - Forward only a user scope change, a worker decision request, or a real
   blocker or wrong-scope discovery.
 - Save the final result in the project note or a concise worker record before

@@ -147,10 +147,22 @@ visible task solely for verification.
   real task ID and apply the title before reporting dispatch complete.
 - Record a created worker immediately in `threads/index.md`, including its
   exact `CoS ·` title and that it was Chief-created.
+- Every worker-creation or continuation prompt must carry the source Chief task
+  ID and the callback contract in `templates/thread.md`. Assume the user does
+  not routinely read or interact with worker tasks. When a worker needs user
+  approval, input, access, or a decision, it must send a concise callback to
+  the source Chief task using Codex task messaging when available. The callback
+  names the visible worker title and ID, exact need, why, blocked work, safe
+  options, and deadline. If task messaging is unavailable, the worker ends
+  with machine-detectable `NEEDS_USER` and those same fields. Silence is never
+  approval, and a callback does not broaden authority.
 - Dispatch once with the complete context packet, then set the worker running.
-  Monitor compact task status and report progress or results; steer only for a
-  user scope change, a worker decision request, or a real blocker or
-  wrong-scope discovery.
+  Monitor compact task status and report progress or results. For a callback,
+  immediately show `🚨 CHIEF APPROVAL NEEDED`, tell the user they may answer in
+  the Chief task or open the worker, and relay the user's answer exactly back
+  to that worker. Record an unresolved need as `Waiting for user — <exact
+  approval or input>`, not vague `Blocked`. Steer only for a user scope change,
+  a worker decision request, or a real blocker or wrong-scope discovery.
 - When a push is explicitly authorized, prefer the narrow non-force form
   `git push origin <branch>`. Do not combine the push with upstream tracking or
   unrelated Git configuration unless it is required.
@@ -185,5 +197,9 @@ Approval for one action does not authorize later actions.
 - Put richer evidence, context, and source links under **Details for
   Follow-up** so later expansion stays evidence-based.
 - Do not repeat previously reported status.
+- On every check-in, scan active or blocked approved workers for unresolved
+  approval needs. Repeat each unresolved `🚨 CHIEF APPROVAL NEEDED` alert until
+  resolved, even when other unchanged status is deduplicated. Do not alert for
+  ordinary progress, optional suggestions, or completed work.
 - Heartbeats must remain read-oriented and must not create workers or perform
   external actions.

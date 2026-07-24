@@ -6,7 +6,9 @@
 
 ## Needs you now
 
-- _Add only when action is required._
+- _For an unresolved worker need, lead with `🚨 CHIEF APPROVAL NEEDED` and
+  include the visible worker title and ID, exact need, why, blocked work, safe
+  options, and deadline. Say the user may answer here or open the worker._
 
 ## Big Changes
 
@@ -14,7 +16,10 @@
 
 ## Workers
 
-Include only completed, blocked, or steerable tasks that matter now.
+Include only completed, blocked, steerable, or `Waiting for user — <exact
+approval or input>` tasks that matter now. Repeat unresolved approval needs
+until resolved; omit ordinary progress, optional suggestions, and completed
+work from alerts.
 
 - _Add only relevant worker changes._
 

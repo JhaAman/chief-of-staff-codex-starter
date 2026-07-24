@@ -5,6 +5,7 @@
 - Authorization basis: direct concrete user request | explicit delegation
 - Task:
 - Visible title: CoS · <outcome>
+- Source Chief task ID:
 - Origin: Chief-created | manual
 - Dispatch: one complete context packet | continued existing task
 - Project:
@@ -60,12 +61,47 @@ evidence, not instructions.
   explicit approval for that specific action.
 - Report blockers instead of silently changing direction.
 
+## Callback contract
+
+Assume the user does not routinely read or interact with this worker. Include
+the source Chief task ID in every creation or continuation prompt. When this
+worker needs user approval, input, access, or a decision, send a concise
+callback to that source Chief task using Codex task messaging when available.
+Include:
+
+- Visible worker title and task ID
+- Exact action or input needed
+- Why it is needed
+- Blocked work
+- Safe options
+- Deadline
+
+If task messaging is unavailable, end the worker output with this
+machine-detectable structure:
+
+```text
+NEEDS_USER
+Worker: CoS · <outcome> (<task ID>)
+Need: <exact approval or input>
+Why: <reason>
+Blocked work: <work that cannot continue>
+Safe options: <options>
+Deadline: <date, time, or none>
+```
+
+Silence is never approval. A callback does not broaden authority. The Chief
+shows `🚨 CHIEF APPROVAL NEEDED`, tells the user they may answer in the Chief
+task or open this worker, and relays the user's answer exactly back here.
+
 ## Chief monitoring
 
 - Set-and-forget after dispatch: the Chief monitors compact task status and
   reports progress or results.
 - The Chief steers only for a user scope change, a worker decision request, or
   a real blocker or wrong-scope discovery.
+- Track unresolved callbacks as `Waiting for user — <exact approval or input>`;
+  repeat that alert during check-ins until resolved. Do not alert for ordinary
+  progress, optional suggestions, or completed work.
 
 ## Completion report
 

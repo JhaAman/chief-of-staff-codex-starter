@@ -20,7 +20,8 @@ approved in sources/index.md with the previous successful check-in.
 Inspect only:
 - approved source scopes that are relevant to active project notes;
 - active project notes and the worker tasks explicitly recorded in
-  threads/index.md.
+  threads/index.md, including active or blocked approved workers with an
+  unresolved user need.
 
 Interrupt only for:
 - a person waiting on the user;
@@ -28,14 +29,21 @@ Interrupt only for:
 - a material project, ownership, risk, or deadline change;
 - a decision that requires the user;
 - an approved worker that completed, became blocked, or needs corrected scope.
+- an unresolved worker approval, input, access, or decision need.
 
 Quietly update the vault only when a durable fact, status, owner, risk,
 decision, blocker, or next action changed, except for the narrowly allowed
 skill-usage registry updates below. Record confirmed facts separately from
 inference. Do not copy source messages or transcripts. Do not repeat previously
-reported status.
+reported status, except repeat each unresolved worker approval alert until it is
+resolved. Track it as `Waiting for user — <exact approval or input>`, not vague
+`Blocked`. Do not alert for ordinary progress, optional suggestions, or
+completed work.
 
-If something requires attention, report why it matters now, the action needed,
+If a worker needs the user, lead with `🚨 CHIEF APPROVAL NEEDED` and include its
+visible title and ID, exact need, why, blocked work, safe options, and deadline.
+Tell the user they may answer in the Chief task or open the worker. Otherwise,
+if something requires attention, report why it matters now, the action needed,
 the source, and any deadline. Keep the visible report short: use `Big Changes`,
 plain words, and recognizable subjects instead of IDs or abstract labels. Name
 the person, source, or channel for asks and link it when available; retain
