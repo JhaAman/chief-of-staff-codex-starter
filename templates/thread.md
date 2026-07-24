@@ -2,6 +2,7 @@
 
 - Authorized by:
 - Authorization date: YYYY-MM-DD
+- Authorization basis: direct concrete user request | explicit delegation
 - Task:
 - Visible title: CoS · <outcome>
 - Origin: Chief-created | manual
