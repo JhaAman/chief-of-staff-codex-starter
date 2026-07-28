@@ -33,6 +33,7 @@ Interrupt only for:
 - a decision that requires the user;
 - an approved worker that completed, became blocked, or needs corrected scope.
 - an unresolved worker approval, input, access, or decision need.
+- an unresolved worker interview need.
 
 Quietly update the vault only when a durable fact, status, owner, risk,
 decision, blocker, or next action changed, except for the narrowly allowed
@@ -53,7 +54,9 @@ omissions, contradictions, repeated work, or ordinary mistakes. Do not alert
 for raw compaction events; surface only a later, concretely evidenced impact
 with a credible unbounded-context counterfactual.
 
-If a worker needs the user, lead with `🚨 CHIEF APPROVAL NEEDED` and include its
+For `NEEDS_USER_INTERVIEW`, lead with `🚨 CHIEF INTERVIEW WAITING`, link the
+task, and tell the user to complete the interview there without reproducing its
+question. For any other worker need, lead with `🚨 CHIEF APPROVAL NEEDED` and include its
 visible title as `[Task title](codex://threads/<thread-id>)` when known
 (otherwise say link pending), exact need, why, blocked work, safe options, and
 deadline.

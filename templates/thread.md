@@ -109,6 +109,36 @@ Silence is never approval. A callback does not broaden authority. The Chief
 shows `🚨 CHIEF APPROVAL NEEDED`, tells the user they may answer in the Chief
 task or open this worker, and relays the user's answer exactly back here.
 
+Routine status, dependency waits, completion, pull-request readiness, and CI
+remain task-local for background Chief inspection. A direct callback is allowed
+only when waiting for the next check-in causes material time-sensitive harm:
+
+```text
+URGENT_BLOCKER
+Task: [CoS · <outcome>](codex://threads/<task-id>)
+Action: <exact action needed>
+Harm: <why this cannot wait>
+Safe options: <options>
+Deadline: <date, time, or none>
+```
+
+## Worker-owned interview
+
+Use this only when the user explicitly requested a multi-question interview.
+Ask one concise question at a time inside this worker task. Before each wait,
+record:
+
+```text
+NEEDS_USER_INTERVIEW
+Task: [CoS · <outcome>](codex://threads/<task-id>)
+Action: Open this task and complete the interview here.
+Interview state: waiting
+```
+
+The Chief links this wait as `🚨 CHIEF INTERVIEW WAITING` but does not repeat
+the question. Stay idle without polling; after the final answer, record
+`INTERVIEW_COMPLETE` and continue in the same task.
+
 ## Chief monitoring
 
 - Set-and-forget after dispatch: the Chief monitors compact task status and
@@ -125,7 +155,8 @@ task or open this worker, and relays the user's answer exactly back here.
 
 ## Completion report
 
-- Status: completed | blocked | abandoned
+- Status: completed | NEEDS_USER | NEEDS_USER_INTERVIEW |
+  NEEDS_CHIEF_VERIFICATION | blocked | abandoned
 - Task: [CoS · <outcome>](codex://threads/<task-id>) | link pending
 - Result:
 - Branch:
@@ -134,3 +165,6 @@ task or open this worker, and relays the user's answer exactly back here.
 - Blockers or decisions:
 - Vault updates:
 - Next action:
+
+Use `templates/worker-summary.md` for the final durable handoff. Workers do
+not edit `threads/index.md`; the Chief is the ledger writer.

@@ -5,7 +5,9 @@ description: Interview a user one question at a time and propose the smallest us
 
 # Bootstrap Chief of Staff
 
-Ask one question at a time. Do not front-load a questionnaire.
+Ask one concise question at a time. Do not front-load a questionnaire. Start
+by explaining that the user will approve a small proposal before anything is
+saved, connected, or scheduled.
 
 ## Learn
 
@@ -32,9 +34,11 @@ After the interview, propose:
 2. Three to seven notes based on `templates/project.md`.
 3. Rows for `projects/index.md` and `sources/index.md`.
 4. The smallest useful connector set, with one workflow per connector.
-5. Notification rules and an optional heartbeat cadence.
-6. Any necessary narrow changes to `AGENTS.md` or
-   `automations/heartbeat.md`.
+5. Notification rules and, only if useful, an optional heartbeat cadence.
+
+Explain a connector only when it unlocks a named workflow. Keep the first
+proposal usable without connectors. Treat a private backup remote as a setup
+step, not as permission to create or push to one.
 
 Do not edit files, install or connect apps, create workers, or create or
 activate an automation until the user approves the proposal.
@@ -50,6 +54,10 @@ After approval:
 - show the diff before committing;
 - commit only when the user requested durable Git history.
 
-Stop when the vault is ready for a first manual `$check-in`. Source
-authorization, task pinning, worker creation, and heartbeat activation are
-separate actions.
+Then run one manual `$check-in` using only the newly approved scopes (or the
+vault's internal records when no source is approved). Use it to verify the
+first-report path; do not create a worker, connect an app, or activate a
+heartbeat. End with the result and the smallest next action.
+
+Source authorization, task pinning, worker creation, and heartbeat activation
+are separate actions.

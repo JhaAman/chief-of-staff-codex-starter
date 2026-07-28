@@ -1,0 +1,7 @@
+interface:
+  display_name: "Plan Overview"
+  short_description: "Summarize recorded project and worker status"
+  default_prompt: "Use $plan-overview to summarize this Chief of Staff vault."
+
+policy:
+  allow_implicit_invocation: false

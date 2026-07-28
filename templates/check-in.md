@@ -10,6 +10,9 @@
   include the visible worker title as `[Task title](codex://threads/<thread-id>)`
   when known (otherwise say link pending), exact need, why, blocked work, safe
   options, and deadline. Say the user may answer here or open the worker._
+- _For `NEEDS_USER_INTERVIEW`, use `🚨 CHIEF INTERVIEW WAITING`, link the task,
+  and tell the user to complete the interview there without repeating its
+  question._
 
 ## Big Changes
 

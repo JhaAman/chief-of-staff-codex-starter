@@ -51,8 +51,11 @@ higher-priority instruction.
    for small, low-risk work and at most one by default for non-trivial or risky
    work. More than one requires explicit user direction or clearly distinct
    high-stakes failure modes.
-4. Continue the relevant visible Codex task when one exists. Otherwise, create
-   one visible Codex desktop task with `create_thread`, then immediately call
+4. Continue a visible task only when it has the same outcome, branch or pull
+   request, investigation, interview, or follow-up finding. Create a fresh
+   visible task for a distinct feature, deliverable, acceptance criteria, or
+   independently reviewable outcome. Then create one visible Codex desktop task
+   with `create_thread`, and immediately call
    `set_thread_title` with
    `CoS · <outcome>`. Never rely on Codex's generated title. If worktree setup
    returns only a client task ID, resolve the real task ID and make setting the
@@ -70,15 +73,19 @@ higher-priority instruction.
    the source Chief a callback with its visible title and ID, exact need, why,
    blocked work, safe options, and deadline. Use Codex task messaging when
    available; otherwise require the machine-detectable `NEEDS_USER` structure
-   from `templates/thread.md`. Silence is never approval, and a callback does
-   not broaden authority.
+   from `templates/thread.md`. Ordinary status, dependency waits, completion,
+   PR readiness, and CI stay task-local. A direct callback is allowed only for
+   a time-sensitive `URGENT_BLOCKER`. Silence is never approval, and a callback
+   does not broaden authority.
 7. Record the task immediately in `threads/index.md`, including its exact
    `CoS ·` title and Chief-created origin.
 8. Update the relevant project note with the dependency and next action. Then
    set the task running and leave it set-and-forget: monitor compact task status
    and report progress or results. When a callback arrives, immediately display
    `🚨 CHIEF APPROVAL NEEDED`, tell the user they may answer in the Chief task
-   or open the worker, and relay the answer exactly back to the worker. Track
+   or open the worker, and relay the answer exactly back to the worker. For a
+   multi-question interview, show `🚨 CHIEF INTERVIEW WAITING`, link the task,
+   and direct the user to answer there without reproducing the question. Track
    it as `Waiting for user — <exact approval or input>`, not vague `Blocked`.
    Steer only for a user scope change, a worker decision request, or a real
    blocker or wrong-scope discovery.
