@@ -3,42 +3,40 @@
 - Date and time: YYYY-MM-DD HH:MM TIMEZONE
 - Scope:
 - Projects:
+- Freshness: refreshed | Last known — <time and missing source>
 
 ## Needs you now
 
-- _For an unresolved worker need, lead with `🚨 CHIEF APPROVAL NEEDED` and
-  include the visible worker title as `[Task title](codex://threads/<thread-id>)`
-  when known (otherwise say link pending), exact need, why, blocked work, safe
-  options, and deadline. Say the user may answer here or open the worker._
-- _For `NEEDS_USER_INTERVIEW`, use `🚨 CHIEF INTERVIEW WAITING`, link the task,
-  and tell the user to complete the interview there without repeating its
-  question._
+- _For `NEEDS_USER_TEXT_APPROVAL`, name the target and include the complete
+  proposed text or exact diff unchanged._
+- _For a worker-owned interview, use `🚨 CHIEF INTERVIEW WAITING`, link the
+  task, and direct the user to complete it there without repeating its question._
+- _For other unresolved needs, link the task and include action, why, blocked
+  work, safe options, and deadline._
 
 ## Big Changes
 
-- _Use a recognizable subject and plain state. Keep each item short._
+- _Use a recognizable subject and plain state._
 
 ## Workers
 
-Include every approved, non-archived worker with `Waiting for user — <exact
-approval or input>`, regardless of runtime state. Repeat it until answered,
-withdrawn, or superseded; after relay, clear or update the ledger state. Omit
-optional suggestions, ordinary progress, archived work, and cancelled work from
-alerts. Use a canonical title link for every known task.
+- _Include only a completed, blocked, or steerable task that matters now._
+- _Treat `WAITING_ON_DEPENDENCY` and `DEPENDENCY_READY` as coordination, not a
+  user alert unless the user must act. Accept readiness only after the exact
+  validated output is integrated into the authoritative branch._
 
-- _Add only relevant worker changes._
+## Closure maintenance
 
-## Details for Follow-up
+- _Omit when no durable record changed. For at most three scanned tasks, record
+  the closure lane, evidence used, missing evidence, and archive decision._
 
-- _Keep richer evidence, source links, ownership, and context here so a later
-  expansion can stay grounded. Say “Nothing for you” for resolved or
-  elsewhere-owned items._
+## Details for follow-up
+
+- _Keep richer evidence and source links here._
 
 ## Source coverage
 
-List refreshed approved sources and material access limitations.
-
-- _List refreshed approved sources and limitations._
+- _List refreshed approved sources and meaningful limitations._
 
 ## Vault changes
 

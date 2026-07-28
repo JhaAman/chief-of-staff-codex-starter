@@ -1,0 +1,7 @@
+interface:
+  display_name: "Chief of Staff End-of-Day Summary"
+  short_description: "Produce a concise weekday closeout from refreshed state"
+  default_prompt: "Use $end-of-day-summary for a concise weekday Chief of Staff closeout."
+
+policy:
+  allow_implicit_invocation: false

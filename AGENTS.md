@@ -50,6 +50,41 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
 - Store summaries and durable facts, never raw transcripts, credentials, or
   unnecessary sensitive content.
 
+## Bounded state freshness
+
+- Treat `threads/index.md`, project notes, plans, check-ins, and summaries as
+  caches. Live Codex task state and authoritative Git or pull-request state
+  are the source of truth.
+- Before calling touched state current, producing a check-in, end-of-day
+  summary, plan overview, dependency decision, or user-facing result, perform
+  one immediate bounded refresh of the relevant approved tasks and branch or
+  pull-request state.
+- Reconcile meaningful drift at the next Chief turn or hourly heartbeat:
+  landed dependencies still shown as waiting, completed tasks still marked
+  active, unresolved user needs, missing PR state, and duplicate or superseded
+  tasks.
+- A verified `DEPENDENCY_READY` handoff may resume its declared dependent
+  immediately. The ledger can catch up on the next Chief turn or heartbeat.
+- If refresh is unavailable, label the result `Last known`, state when it was
+  checked, and name the missing source. Do not imply instant freshness.
+- Perform one bounded pass only. Never sleep, poll repeatedly, add a daemon,
+  or create another automation for freshness.
+
+## Human-facing text approval
+
+- Keep durable outward- or reviewer-facing narrative brief, plain, and fit to
+  its purpose.
+- Before changing, committing, pushing, creating, or updating a `README.md`,
+  public or user documentation, release notes, or a pull-request title or
+  description, record `NEEDS_USER_TEXT_APPROVAL` with the target and exact
+  proposed text or exact diff. Wait for the user's approval.
+- Exact user-supplied text may proceed only unchanged. A substantive rewrite
+  requires approval again.
+- This gate does not apply to task-local status, ledger rows, private
+  operational notes, test fixtures, generated artifacts, code identifiers, or
+  ordinary code comments. It never authorizes publication, posting, merge,
+  deployment, or another external action.
+
 ## Task links
 
 - In every user-facing reply, dispatch confirmation, progress or result report,
@@ -200,20 +235,22 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
 - In user-facing dispatch confirmations and later reports, use the worker's
   canonical task link when its ID is known; otherwise say the link is pending.
 - Every worker-creation or continuation prompt must carry the source Chief task
-  ID and the callback contract in `templates/thread.md`. Assume the user does
-  not routinely read or interact with worker tasks. When a worker needs user
-  approval, input, access, or a decision, it must send a concise callback to
-  the source Chief task using Codex task messaging when available. The callback
-  names the visible worker title and ID, exact need, why, blocked work, safe
-  options, and deadline. If task messaging is unavailable, the worker ends
-  with machine-detectable `NEEDS_USER` and those same fields. Silence is never
-  approval, and a callback does not broaden authority.
+  ID and the task-local status contract in `templates/thread.md`. Assume the
+  user does not routinely read worker tasks.
 - Workers keep routine progress, dependency waits, completion, pull-request
-  readiness, and normal CI or review issues as machine-detectable task-local
-  status or final output for background inspection. A direct callback is
-  allowed once only for a time-sensitive `URGENT_BLOCKER`; it names the exact
-  action, harm, safe options, and deadline. Routine events do not interrupt the
-  Chief.
+  readiness, and normal CI or review issues task-local for background
+  inspection. A worker blocked from useful work by one approval, access,
+  decision, or bounded clarification may send one `NEEDS_USER` callback with
+  task, action, why, blocked work, safe options, and deadline. A requested
+  multi-question interview may likewise send one `NEEDS_USER_INTERVIEW`
+  callback without reproducing any question. Silence is never approval.
+- `URGENT_BLOCKER` is separate and reserved for material time-sensitive harm;
+  it includes the linked task, exact action, harm, safe options, and deadline.
+  Completion, PR readiness, dependency or capacity waits, normal CI or review
+  issues, optional suggestions, and ordinary status never use a callback.
+- For a declared unavailable dependency, record `WAITING_ON_DEPENDENCY` once.
+  Send `DEPENDENCY_READY` only after the exact output is validated and
+  integrated into the authoritative branch; never infer or wake unrelated work.
 - For an explicitly requested multi-question interview, the worker conducts it
   in its own visible task, asks one concise question at a time, and records
   `NEEDS_USER_INTERVIEW` with a task link before waiting idle. The Chief shows
@@ -223,12 +260,11 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
   and records a concise final handoff from `templates/worker-summary.md` before
   archiving a worker.
 - Dispatch once with the complete context packet, then set the worker running.
-  Monitor compact task status and report progress or results. For a callback,
-  immediately show `🚨 CHIEF APPROVAL NEEDED`, tell the user they may answer in
-  the Chief task or open the worker, and relay the user's answer exactly back
-  to that worker. Record an unresolved need as `Waiting for user — <exact
-  approval or input>`, not vague `Blocked`. Steer only for a user scope change,
-  a worker decision request, or a real blocker or wrong-scope discovery.
+  Inspect compact task status during a manual check-in or heartbeat. Record an
+  unresolved need as `Waiting for user — <exact approval or input>`, not vague
+  `Blocked`; repeat it until resolved, withdrawn, or superseded. Steer only for
+  a user scope change, a worker decision request, or a real blocker or
+  wrong-scope discovery.
 - Dispatch independent authorized tasks promptly up to available platform
   capacity. After the minimum ledger update, yield the primary Chief turn. If
   capacity is exhausted, record or queue work visibly and report the real limit;
@@ -250,7 +286,28 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
 - When a push is explicitly authorized, prefer the narrow non-force form
   `git push origin <branch>`. Do not combine the push with upstream tracking or
   unrelated Git configuration unless it is required.
-- Archive a worker only after its result is recorded in the vault.
+- Archive a worker only after its result is recorded through the proportional
+  closure rule below and it is no longer waiting on the user or a real
+  dependency.
+
+## Proportional task closure
+
+- Runtime state alone never proves a task is terminal. Direct evidence must
+  establish the result and show that no approval, input, dependency, merge,
+  deploy, or build remains.
+- Before archiving, retain the linked task, terminal state, concise result or
+  stop reason, important artifact links, validation when applicable, remaining
+  risk, and exact user action or `None`.
+- Routine tasks need a concise ledger or project-note result. Important,
+  reusable, or decision-bearing tasks also need a worker summary. Abandoned or
+  superseded tasks retain the stop reason, reusable result, and exact restart
+  condition or successor.
+- A task waiting on the user or a real dependency is not terminal. Missing
+  evidence is `Closure pending — <exact missing evidence>`, never a guessed
+  result.
+- During a manual check-in or weekday end-of-day closeout, inspect at most
+  three recent terminal-looking unarchived tasks. Do not bulk-archive, rewrite
+  old history, or create routine user noise just to prove closure.
 
 ## Actions requiring explicit approval
 

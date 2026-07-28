@@ -1,0 +1,9 @@
+scenario,lane,terminal,report_required,archive_state,user_visible
+tiny completed task,routine,yes,no,Ready,no
+important completed task,important,yes,yes,Ready,only if meaningful
+abandoned task,abandoned or superseded,yes,no,Ready,only if project changes
+runtime completed with unresolved user input,none,no,no,No,yes
+runtime completed with unresolved dependency,none,no,no,No,no
+superseded task,abandoned or superseded,yes,no,Ready,only if project changes
+missing evidence,none,no,no,No,no
+already archived task,none,yes,no,Yes,no
