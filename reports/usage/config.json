@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "timezone": "UTC",
+  "pricing_cache": "reports/usage/pricing.json",
+  "output_directory": "reports/usage/generated",
+  "actual_cost": {
+    "subscription_marginal_usage_usd": null,
+    "subscription_marginal_usage_basis": "not configured",
+    "fixed_subscription_fee_usd": null,
+    "actual_cash_paid_outside_subscription_usd": "unknown"
+  }
+}

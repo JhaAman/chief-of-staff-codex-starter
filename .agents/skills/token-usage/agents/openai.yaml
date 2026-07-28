@@ -1,0 +1,4 @@
+interface:
+  display_name: "Token Usage"
+  short_description: "Summarize local Codex tokens and costs"
+  default_prompt: "Use $token-usage to summarize this week’s local Codex token usage."
