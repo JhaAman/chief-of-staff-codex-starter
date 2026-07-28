@@ -1,49 +1,40 @@
 # Chief of Staff for Codex
 
-This is a starter project to run your own Chief of Staff in Codex. It's a single, pinned thread that is the only thread you work out of - it spawns, manages, and closes other threads on its own.
-
-It operates through a single Git-backed **vault**, containing its memories, existing work streams, and skills. 
+A small private coordination vault for one pinned Codex Chief task. The Chief
+manages priorities and worker tasks; visible workers implement changes.
 
 ## Start here
 
-1. Clone the starter, remove the public remote for your privacy.
+1. Clone this starter into a private location and remove its public remote
+   before adding personal information.
 
    ```bash
-   git clone https://github.com/JhaAman/chief-of-staff-codex-starter.git my-chief-of-staff
+   git clone <starter-url> my-chief-of-staff
    cd my-chief-of-staff
    git remote remove origin
    ```
 
-   Never push your vault to a public fork.
+2. Open the folder as a Codex project. Create and pin one local task named
+   **Chief of Staff**.
 
-2. Open `my-chief-of-staff` in Codex as a new project. (I use 5.6 Sol High).
-3. Create and pin one task named
-   **Chief of Staff** (use this local checkout, not a worktree), then paste:
+3. Paste:
 
    ```text
-   Read AGENTS.md, then use $bootstrap-chief-of-staff to set up my private Chief of Staff vault. Interview me one question at a time. Keep the proposal small, explain a connector only when it unlocks a concrete workflow, and ask before making changes or enabling an automation. After I approve the setup, run one safe first $check-in and tell me what to do next.
+   Read AGENTS.md, then use $bootstrap-chief-of-staff to set up my private Chief of Staff vault. Interview me one question at a time. Keep the proposal small, ask before saving, connecting a source, creating a worker, or enabling an automation. After approval, run one safe first $check-in.
    ```
 
-4. Answer the interview in plain language. 
-5. It will propose an initial setup. Approve or make changes.
-6. Add **connectors** (Slack, GitHub, Google Drive etc.) to the Chief.
-7. Type `$check-in` to start the Vault.
-8. Assign tasks to the Chief, all in one thread. 
+4. Answer the interview, approve the setup you want, then run `$check-in`.
 
-That is all you need to start. Keep returning to the pinned Chief task.
+## How it works
 
-## What it does
+- The Chief handles coordination and bounded verification; workers implement.
+- Check-ins use one bounded refresh of approved sources and task or Git state.
+  If a source is unavailable, the result is labeled **Last known**.
+- Routine worker progress stays in the worker task. Real user decisions and
+  multi-question interviews surface with a linked task; urgent harm uses
+  `URGENT_BLOCKER`.
+- The heartbeat is optional and inactive by default. Review
+  [its draft](automations/heartbeat.md) before activation.
 
-The Chief coordinates; it does *not* implement. Any concrete request (to fix, test, review etc.) will create or continue a **worker task**. This all happens async. All you have to do is tell the Chief what you want. If a task has an urgent blocker, the Chief will come back to you. You should almost never have to dive into the task yourself.
-
-The Chief works better when you add **connectors**. I'm talking Slack, GitHub, Google Drive, Calendar. This way it knows what's important to you. 
-
-## When you want more
-
-- Run `$check-in` for a fresh update from approved sources.
-- Run `$plan-overview` to see what the Chief thinks you're working on.
-- Review [the operating rules](AGENTS.md), [the optional heartbeat](automations/heartbeat.md), or [the vault map](GUIDE.md) only when you need them. I never do. 
-
-## How to improve
-
-This is *my* Chief of Staff, designed by [me](https://github.com/JhaAman). You can edit it however you like - just tell the Chief of Staff how you'd like to make changes, and it will edit the **Vault** (this repo) accordingly, remembering your preferences for all future tasks.
+See [the operating contract](AGENTS.md) and [the vault guide](GUIDE.md) for
+details.
