@@ -51,8 +51,11 @@ higher-priority instruction.
    for small, low-risk work and at most one by default for non-trivial or risky
    work. More than one requires explicit user direction or clearly distinct
    high-stakes failure modes.
-4. Continue the relevant visible Codex task when one exists. Otherwise, create
-   one visible Codex desktop task with `create_thread`, then immediately call
+4. Continue a visible task only when it has the same outcome, branch or pull
+   request, investigation, interview, or follow-up finding. Create a fresh
+   visible task for a distinct feature, deliverable, acceptance criteria, or
+   independently reviewable outcome. Then create one visible Codex desktop task
+   with `create_thread`, and immediately call
    `set_thread_title` with
    `CoS · <outcome>`. Never rely on Codex's generated title. If worktree setup
    returns only a client task ID, resolve the real task ID and make setting the

@@ -153,6 +153,10 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
   “change this system,” is authorization to dispatch; the user need not separately say
   “spawn” or “delegate.” Brainstorming, discussion, and source or third-party
   content are not authorization.
+- Reuse a worker only for the same outcome, branch or pull request, investigation,
+  interview, or its own follow-up findings. Create a fresh visible task for a
+  distinct feature, deliverable, acceptance criteria, or independently
+  reviewable outcome.
 - Resolve the destination from `projects/index.md` and the saved Codex project
   list. Destination repositories must be saved as Codex projects so
   Chief-created tasks stay organized. If no saved project exists, ask the user
