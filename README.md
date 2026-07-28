@@ -1,8 +1,8 @@
 # Chief of Staff for Codex
 
-A small, private Git-backed vault for one pinned Codex task: it remembers the
-work that matters, checks only the sources you approve, and sends real work to
-separate visible tasks.
+This is a starter project to run your own Chief of Staff in Codex. It's a single, pinned thread that is the only thread you work out of - it spawns, manages, and closes other threads on its own.
+
+It operates through a single Git-backed vault, containing its memories, existing work streams, and skills. 
 
 ## Start here
 
