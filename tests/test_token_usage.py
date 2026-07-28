@@ -55,19 +55,20 @@ class TokenUsageTest(unittest.TestCase):
     def test_default_includes_cost_in_every_required_section_and_honest_cash(self):
         self.add(turn("current", "2026-07-22T12:00:00Z", usage(100, 50, 20, 120)))
         output = self.summary()
-        self.assertIn("This week: 120 verified tokens", output)
-        self.assertIn("**Actual cash paid outside subscription: unknown**", output)
-        self.assertEqual(output.count("**Actual cash paid outside subscription:"), 1)
-        self.assertIn("API-equivalent counterfactual: $0.00", output)
-        self.assertIn("Weekly trend", output); self.assertIn("Model / effort", output); self.assertIn("Activity", output)
-        self.assertEqual(output.count("$0.00"), 5)
+        self.assertTrue(output.startswith("_Every dollar figure except the bold actual-cash line is an estimate at official API rates, not actual spend._"))
+        self.assertIn("This Week: 120 Verified Tokens", output)
+        self.assertIn("**Actual Cash Paid Outside Subscription: Unknown**", output)
+        self.assertEqual(output.count("**Actual Cash Paid Outside Subscription:"), 1)
+        self.assertNotIn("API-equivalent", output)
+        self.assertIn("Weekly Trend", output); self.assertIn("Model / Effort", output); self.assertIn("Estimated Cost", output)
+        self.assertIn("| Conversation | 120 | $0.00 | 100.0% |", output)
 
     def test_compare_uses_recent_complete_weeks_and_does_not_leak_content(self):
         self.add(turn("old", "2026-07-06T12:00:00Z", usage(100, 0, 10, 110)))
         self.add(turn("new", "2026-07-13T12:00:00Z", usage(200, 0, 20, 220)), source='{"subagent": {"kind": "test"}}')
         self.add(turn("current", "2026-07-23T12:00:00Z", usage(300, 0, 30, 330)))
         output = self.summary("compare-recent-weeks")
-        self.assertIn("Latest complete week: 220 verified tokens, +100.0% versus the prior week.", output)
+        self.assertIn("Latest Complete Week: 220 Verified Tokens, +100.0% versus the prior week.", output)
         self.assertIn("2026-07-05 to 2026-07-11", output); self.assertIn("2026-07-12 to 2026-07-18", output)
         self.assertNotIn("2026-07-19 to 2026-07-25", output)
         self.assertNotIn("TEST_MESSAGE_CONTENT", output); self.assertNotIn(str(self.base), output)
@@ -77,14 +78,21 @@ class TokenUsageTest(unittest.TestCase):
         pricing.write_text(json.dumps({"valid_until": "2020-01-01T00:00:00Z", "models": {}}))
         self.add(turn("current", "2026-07-22T12:00:00Z", usage(100, 0, 20, 120), model="unknown-model"))
         output = self.summary()
-        self.assertIn("unavailable (120 unpriced)", output)
+        self.assertIn("| 2026-07-19 to 2026-07-25 | In Progress | 120 | 120 unpriced |", output)
         self.assertIn("pricing is missing or stale", output)
+
+    def test_partial_pricing_keeps_priced_and_unpriced_quantities_together(self):
+        self.add(turn("priced", "2026-07-22T12:00:00Z", usage(100, 0, 20, 120)))
+        self.add(turn("unpriced", "2026-07-22T13:00:00Z", usage(100, 0, 20, 120), model="unknown-model"))
+        output = self.summary()
+        self.assertIn("$0.00; 120 unpriced", output)
+        self.assertNotIn("priced +", output)
 
     def test_last_four_weeks_keeps_model_and_activity_cost_breakdowns(self):
         self.add(turn("recent", "2026-07-22T12:00:00Z", usage(100, 0, 20, 120)))
         output = self.summary("last-four-weeks")
-        self.assertIn("| example-model | high | 120 | $0.00 |", output)
-        self.assertIn("| conversation | 120 | 100.0% | $0.00 |", output)
+        self.assertIn("| example-model | High | 120 | $0.00 | 0 |", output)
+        self.assertIn("| Conversation | 120 | $0.00 | 100.0% |", output)
 
 
 if __name__ == "__main__": unittest.main()

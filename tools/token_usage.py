@@ -105,8 +105,10 @@ def fmt_tokens(value: int) -> str: return f"{value / 1_000_000:.2f}M" if value >
 def fmt_cost(value: dict[str, Any]) -> str:
     if value["status"] == "no usage": return "—"
     if value["status"] == "estimated": return f"${Decimal(value['priced_usd']):,.2f}"
-    if value["status"] == "partial": return f"${Decimal(value['priced_usd']):,.2f} priced + {fmt_tokens(value['unpriced_tokens'])} unpriced"
-    return f"unavailable ({fmt_tokens(value['unpriced_tokens'])} unpriced)"
+    if value["status"] == "partial": return f"${Decimal(value['priced_usd']):,.2f}; {fmt_tokens(value['unpriced_tokens'])} unpriced"
+    return f"{fmt_tokens(value['unpriced_tokens'])} unpriced"
+
+def title(value: str) -> str: return value.replace("_", " ").title()
 
 def empty(start: date, complete: bool) -> dict[str, Any]: return {"start": start.isoformat(), "end": (start + timedelta(days=6)).isoformat(), "complete": complete, **with_breakdowns([], {"models": {}}, False)}
 
@@ -127,27 +129,26 @@ def merge_periods(periods: list[dict[str, Any]]) -> dict[str, Any]:
 
 def select(report: dict[str, Any], scope: str) -> tuple[str, dict[str, Any], list[dict[str, Any]], dict[str, Any] | None]:
     weekly = report["weekly"]; current = start_of_week(at(report["generated_at"]), ZoneInfo(report["timezone"]))
-    if scope == "all-time": return "All recorded usage", report["all"], weekly[-6:], None
+    if scope == "all-time": return "All Recorded Usage", report["all"], weekly[-6:], None
     if scope == "compare-recent-weeks":
-        complete = [week for week in weekly if week["complete"]]; return "Latest complete week", (complete[-1] if complete else empty(current, False)), complete[-2:], (complete[-2] if len(complete) > 1 else None)
+        complete = [week for week in weekly if week["complete"]]; return "Latest Complete Week", (complete[-1] if complete else empty(current, False)), complete[-2:], (complete[-2] if len(complete) > 1 else None)
     trend = [next((week for week in weekly if week["start"] == (current - timedelta(days=7 * offset)).isoformat()), empty(current - timedelta(days=7 * offset), offset > 0)) for offset in range(3, -1, -1)]
     if scope == "last-four-weeks":
-        return "Last four calendar weeks", merge_periods(trend), trend, None
-    return "This week", trend[-1], trend, None
+        return "Last Four Calendar Weeks", merge_periods(trend), trend, None
+    return "This Week", trend[-1], trend, None
 
 def render(report: dict[str, Any], scope: str) -> str:
     label, chosen, trend, prior = select(report, scope); total = chosen["tokens"]["total_tokens"]
     change = "" if prior is None else " with no usage in the prior week" if not prior["tokens"]["total_tokens"] else f", {(total - prior['tokens']['total_tokens']) / prior['tokens']['total_tokens']:+.1%} versus the prior week"
-    actual = report["actual_cost"]; cash = actual.get("actual_cash_paid_outside_subscription_usd", "unknown"); money = lambda value: f"${Decimal(str(value)):,.2f}" if value is not None else "unknown"; cash = money(cash) if isinstance(cash, (int, float)) else str(cash)
-    lines = [f"{label}: {fmt_tokens(total)} verified tokens{change}.", "", f"**Actual cash paid outside subscription: {cash}**", "", f"- API-equivalent counterfactual: {fmt_cost(chosen['api_equivalent'])}; not money paid.", f"- Subscription-covered marginal usage: {money(actual.get('subscription_marginal_usage_usd'))} ({actual.get('subscription_marginal_usage_basis', 'not configured')}).", f"- Fixed subscription fee: {money(actual.get('fixed_subscription_fee_usd'))}.", "- Cached input is included in input; reasoning output is included in output.", "", "Weekly trend", "", "| Week | State | Tokens | API-equivalent |", "| --- | --- | ---: | ---: |"]
-    for week in trend: lines.append(f"| {week['start']} to {week['end']} | {'complete' if week['complete'] else 'in progress'} | {week['tokens']['total_tokens']:,} | {fmt_cost(week['api_equivalent'])} |")
-    lines += ["", "Model / effort", "", "| Model | Effort | Tokens | API-equivalent |", "| --- | --- | ---: | ---: |"]
-    for item in chosen["model_effort"]: lines.append(f"| {item['label'][0]} | {item['label'][1]} | {item['tokens']['total_tokens']:,} | {fmt_cost(item['api_equivalent'])} |")
-    if not chosen["model_effort"]: lines.append("| No usage recorded | — | 0 | — |")
-    lines += ["", "Activity", "", "| Activity | Tokens | Share | API-equivalent |", "| --- | ---: | ---: | ---: |"]
-    for item in chosen["activity"]: lines.append(f"| {item['label'][0]} | {item['tokens']['total_tokens']:,} | {item['tokens']['total_tokens'] / total:.1%} | {fmt_cost(item['api_equivalent'])} |")
-    if not chosen["activity"]: lines.append("| No usage recorded | 0 | — | — |")
-    if report["warnings"]: lines += ["", "Data quality: " + "; ".join(report["warnings"]) + "."]
+    actual = report["actual_cost"]; cash = actual.get("actual_cash_paid_outside_subscription_usd", "unknown"); money = lambda value: f"${Decimal(str(value)):,.2f}" if value is not None else "Unknown"; cash = money(cash) if isinstance(cash, (int, float)) else str(cash).title() if str(cash).lower() == "unknown" else str(cash)
+    lines = ["_Every dollar figure except the bold actual-cash line is an estimate at official API rates, not actual spend._", "", f"{label}: {fmt_tokens(total)} Verified Tokens{change}.", "", f"**Actual Cash Paid Outside Subscription: {cash}**", "", f"- Cache / Reasoning: {fmt_tokens(chosen['tokens']['cached_input_tokens'])} cached input; {fmt_tokens(chosen['tokens']['reasoning_output_tokens'])} reasoning. Both are already included in the verified total.", f"- Subscription: Covered marginal usage is {money(actual.get('subscription_marginal_usage_usd'))} ({actual.get('subscription_marginal_usage_basis', 'not configured')}); fixed fee is {money(actual.get('fixed_subscription_fee_usd'))}.", f"- Data Quality: {'; '.join(report['warnings']) if report['warnings'] else 'No local counter inconsistencies detected'}.", "", "Weekly Trend", "", "| Week | Status | Verified Tokens | Estimated Cost | Cached Input |", "| --- | --- | ---: | ---: | ---: |"]
+    for week in trend: lines.append(f"| {week['start']} to {week['end']} | {'Complete' if week['complete'] else 'In Progress'} | {fmt_tokens(week['tokens']['total_tokens'])} | {fmt_cost(week['api_equivalent'])} | {fmt_tokens(week['tokens']['cached_input_tokens'])} |")
+    lines += ["", "Model / Effort", "", "| Model | Effort | Verified Tokens | Estimated Cost | Cached Input |", "| --- | --- | ---: | ---: | ---: |"]
+    for item in chosen["model_effort"]: lines.append(f"| {item['label'][0]} | {title(item['label'][1])} | {fmt_tokens(item['tokens']['total_tokens'])} | {fmt_cost(item['api_equivalent'])} | {fmt_tokens(item['tokens']['cached_input_tokens'])} |")
+    if not chosen["model_effort"]: lines.append("| No Usage Recorded | — | 0 | — | 0 |")
+    lines += ["", "Activity", "", "| Activity | Verified Tokens | Estimated Cost | Share |", "| --- | ---: | ---: | ---: |"]
+    for item in chosen["activity"]: lines.append(f"| {title(item['label'][0])} | {fmt_tokens(item['tokens']['total_tokens'])} | {fmt_cost(item['api_equivalent'])} | {item['tokens']['total_tokens'] / total:.1%} |")
+    if not chosen["activity"]: lines.append("| No Usage Recorded | 0 | — | — |")
     return "\n".join(lines) + "\n"
 
 def main(argv: list[str] | None = None) -> int:
