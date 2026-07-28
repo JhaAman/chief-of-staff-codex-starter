@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "currency": "USD",
+  "fetched_at": null,
+  "valid_until": null,
+  "models": {},
+  "official_pricing_source": "https://platform.openai.com/docs/pricing"
+}
