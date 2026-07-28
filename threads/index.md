@@ -10,7 +10,8 @@ only after the Chief relays the user's answer to the worker. Check-ins and
 heartbeats scan every approved, non-archived row with this state regardless of
 the runtime task status; ignore archived or cancelled work.
 
-In user-facing reports, reference a known task from this index as
+Workers record task-local status and final reports; the Chief alone writes this
+ledger. In user-facing reports, reference a known task from this index as
 `[Task title](codex://threads/<thread-id>)`; if its ID is absent, say its link
 is pending. Do not present only a raw task ID.
 

@@ -204,6 +204,20 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
   options, and deadline. If task messaging is unavailable, the worker ends
   with machine-detectable `NEEDS_USER` and those same fields. Silence is never
   approval, and a callback does not broaden authority.
+- Workers keep routine progress, dependency waits, completion, pull-request
+  readiness, and normal CI or review issues as machine-detectable task-local
+  status or final output for background inspection. A direct callback is
+  allowed once only for a time-sensitive `URGENT_BLOCKER`; it names the exact
+  action, harm, safe options, and deadline. Routine events do not interrupt the
+  Chief.
+- For an explicitly requested multi-question interview, the worker conducts it
+  in its own visible task, asks one concise question at a time, and records
+  `NEEDS_USER_INTERVIEW` with a task link before waiting idle. The Chief shows
+  `🚨 CHIEF INTERVIEW WAITING`, links the task, and does not reproduce the
+  question. Ordinary one-off input stays in the Chief flow as `NEEDS_USER`.
+- Workers do not edit `threads/index.md`. The Chief is the sole ledger writer
+  and records a concise final handoff from `templates/worker-summary.md` before
+  archiving a worker.
 - Dispatch once with the complete context packet, then set the worker running.
   Monitor compact task status and report progress or results. For a callback,
   immediately show `🚨 CHIEF APPROVAL NEEDED`, tell the user they may answer in
@@ -276,3 +290,10 @@ Approval for one action does not authorize later actions.
   work, and cancelled work.
 - Heartbeats must remain read-oriented and must not create workers or perform
   external actions.
+
+## Plan overview
+
+- Use `$plan-overview` for a recorded portfolio snapshot. It does not refresh
+  live sources or create work.
+- Use `$check-in` when the user wants live or current status. Plans are only
+  for workstreams that need sequencing beyond a project note.

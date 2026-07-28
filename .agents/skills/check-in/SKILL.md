@@ -18,6 +18,8 @@ Refresh relevant live state before calling the vault current.
   non-archived worker regardless of runtime state, and only approved sources
   likely to contain meaningful changes.
 - Do not scan broad history, idle projects, or unapproved sources.
+- A first check-in with no approved live source may validate the vault's
+  internal records and clearly state that no external source was refreshed.
 
 ## Order
 
@@ -28,7 +30,7 @@ Refresh relevant live state before calling the vault current.
 4. Compare live evidence with existing project notes and the previous
    meaningful check-in.
 5. For each approved, non-archived worker, detect unresolved user approval,
-   input, access, or decision needs regardless of runtime state.
+   input, access, decision, or interview needs regardless of runtime state.
 6. Scan `threads/index.md` for every `Waiting for user — <exact need>` row,
    including an idle, completed, or not-loaded worker.
 7. Inspect newly available local Codex metadata for the primary Chief task since
@@ -74,7 +76,10 @@ During an unattended heartbeat:
 
 ## Report
 
-Lead with an unresolved worker need as `🚨 CHIEF APPROVAL NEEDED`, naming the
+Lead with an unresolved worker interview as `🚨 CHIEF INTERVIEW WAITING` and
+link the task, asking the user to open it and complete the interview there
+without repeating the question. Lead with any other unresolved worker need as
+`🚨 CHIEF APPROVAL NEEDED`, naming the
 visible worker title as `[Task title](codex://threads/<thread-id>)` when known
 (otherwise say link pending), exact need, why, blocked work, safe options, and
 deadline. Tell the user they may answer in the Chief task or open the worker;
