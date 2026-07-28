@@ -15,9 +15,11 @@ Map requests to `this-week` (default), `last-four-weeks`, `all-time`, or
 `compare-recent-weeks`. Run `report` instead of `summary` only when a Markdown
 and JSON artifact is requested.
 
-Keep the output intact. Explain that API-equivalent cost is a counterfactual,
-not money paid. Never infer a cash charge, subscription fee, or credit spend
-from a plan or balance snapshot.
+Keep the compact output intact: one estimate note before the first dollar,
+one bold actual-cash line, three accounting bullets, then weekly, model/effort,
+and activity tables with an `Estimated Cost` column. Explain the
+API-rate counterfactual once, not in every cell. Never infer a cash charge,
+subscription fee, or credit spend from a plan or balance snapshot.
 
 Before adding model prices, review the official source, preserve its URL and
 effective date in `reports/usage/pricing.json`, and set a short expiry. Price
