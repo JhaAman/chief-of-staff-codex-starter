@@ -6,8 +6,9 @@ door; these files are its durable memory.
 | Need | Use |
 | --- | --- |
 | Fresh status from approved sources | `$check-in` |
-| Recorded portfolio snapshot, without live refresh | `$plan-overview` |
+| Current portfolio snapshot | `$plan-overview` |
 | Run a clearly authorized outcome | `$chief-of-staff` |
+| Concise weekday closeout | `$end-of-day-summary` |
 | Review an inactive scheduled refresh | `automations/heartbeat.md` |
 
 ## Vault map
@@ -30,11 +31,15 @@ check-ins back into this public starter.
 
 ## Operating boundaries
 
-The Chief uses visible saved-project tasks for implementation and substantive
-changes. It records worker status from background inspection; ordinary waits,
-completion, and CI do not interrupt you. A worker asks through the Chief for a
-one-off decision, and may contact the Chief directly only for a time-sensitive
-`URGENT_BLOCKER`. Human review comments and thread resolution always require
-your same-turn approval of the exact text and action.
+The Chief answers management-only questions and bounded verification. Visible
+saved-project workers implement changes. It uses one bounded refresh of
+relevant task and branch or pull-request state before calling status current,
+or labels it **Last known** when refresh is unavailable. Routine worker status
+is discovered in the background. A worker blocked on a user approval, access
+request, decision, or bounded clarification may send one `NEEDS_USER`; a
+requested multi-question interview may send one `NEEDS_USER_INTERVIEW`.
+`URGENT_BLOCKER` is only for material time-sensitive harm. Human review
+comments and thread resolution always require same-turn approval of the exact
+text and action.
 
 Read [AGENTS.md](AGENTS.md) for the complete operating contract.

@@ -1,0 +1,8 @@
+scenario,approval_required,allowed_without_new_approval
+README edit,yes,no
+pull request description edit,yes,no
+exact user-supplied text,no,yes if unchanged
+private ledger row,no,yes
+task-local machine status,no,yes
+test fixture,no,yes
+generated artifact,no,yes
