@@ -9,7 +9,7 @@ manages priorities and worker tasks; visible workers implement changes.
    before adding personal information.
 
    ```bash
-   git clone <starter-url> my-chief-of-staff
+   git clone https://github.com/JhaAman/chief-of-staff-codex-starter.git my-chief-of-staff
    cd my-chief-of-staff
    git remote remove origin
    ```

@@ -44,7 +44,7 @@ class OperatingContractTest(unittest.TestCase):
         self.assertIn("Closure pending", self.agents)
 
     def test_state_is_refreshed_before_it_is_called_current(self):
-        for document in (self.agents, self.chief, self.check_in, self.eod, self.plan, self.heartbeat):
+        for document in (self.agents, self.chief, self.check_in, self.eod, self.plan):
             with self.subTest(document=document[:40]):
                 self.assertIn("one immediate bounded refresh", compact(document))
                 self.assertIn("Last known", compact(document))
@@ -73,10 +73,15 @@ class OperatingContractTest(unittest.TestCase):
         self.assertIn("`URGENT_BLOCKER`", self.thread)
         self.assertIn("completion, pull-request readiness", compact(self.agents))
 
-    def test_heartbeat_uses_one_closeout_or_check_in_path(self):
-        self.assertIn("WEEKDAY_CLOSEOUT", self.heartbeat)
-        self.assertIn("ORDINARY_CHECK_IN", self.heartbeat)
-        self.assertIn("Do not also run", self.heartbeat)
+    def test_plan_overview_refreshes_task_and_git_state_not_connected_sources(self):
+        compact_agents = compact(self.agents)
+        compact_plan = compact(self.plan)
+        self.assertIn("does not refresh connected sources", compact_agents)
+        self.assertIn("broader approved-source refresh", compact_agents)
+        self.assertIn("authoritative Git branch or pull-request state", compact_plan)
+        self.assertIn("Use `$check-in` when broader live-source refresh is needed", self.plan)
+
+    def test_end_of_day_keeps_proportional_closeout_rules(self):
         self.assertIn("at most three", self.eod)
 
     def test_public_contract_does_not_contain_private_identity_or_paths(self):
@@ -95,6 +100,7 @@ class OperatingContractTest(unittest.TestCase):
             "templates/worker-summary.md",
             "tests/fixtures/task_closure_scenarios.csv",
             "tests/fixtures/text_approval_scenarios.csv",
+            "tests/test_heartbeat_router.py",
             "tests/test_operating_contract.py",
         )
         changed_surfaces = "\n".join(read(path) for path in artifacts)

@@ -11,9 +11,11 @@ calling touched state current, or recommending work.
 
 ## Scope and order
 
-1. Read `AGENTS.md`, `PROFILE.md`, `projects/index.md`, `sources/index.md`,
-   relevant notes, and `threads/index.md`.
-2. Refresh only approved sources relevant to named or active work.
+1. Before any live connector inspection, read `AGENTS.md`, `PROFILE.md`,
+   `projects/index.md`, `sources/index.md`, relevant notes, and
+   `threads/index.md`.
+2. Refresh only source scopes listed in `sources/index.md` and relevant to
+   named or active work.
 3. Inspect every approved, non-archived task that could have changed or could
    still be waiting on the user, including idle, completed, and not-loaded
    runtime states. Read compact task-local status or final output, not full

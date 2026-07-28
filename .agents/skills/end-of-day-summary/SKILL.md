@@ -5,8 +5,11 @@ description: Produce a concise weekday closeout from one bounded refresh of appr
 
 # End-of-Day Summary
 
-Perform one immediate bounded refresh of relevant approved Codex tasks and
-authoritative Git branch or pull-request state before producing a closeout.
+Before any live connector inspection, read `AGENTS.md`, `PROFILE.md`,
+`projects/index.md`, `sources/index.md`, relevant notes, and `threads/index.md`.
+Inspect only source scopes listed in `sources/index.md` and relevant to active
+work. Then perform one immediate bounded refresh of relevant approved Codex
+tasks and authoritative Git branch or pull-request state before producing a closeout.
 Treat the ledger, project notes, plans, and summaries as caches. If refresh is
 unavailable, label the result `Last known`, state when it was checked, and name
 the missing source.

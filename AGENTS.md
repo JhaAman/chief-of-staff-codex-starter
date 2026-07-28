@@ -154,8 +154,8 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
   user-initiated use, set `lastUserUse` to the current timestamp and clear
   `lastReminder`.
 - A skill is stale when 72 hours have elapsed since `lastUserUse`, or since
-  `trackingBaseline` when it has never been used. A heartbeat may remind about
-  at most one stale skill: choose the oldest one whose `lastReminder` is null.
+  `trackingBaseline` when it has never been used. Only a heartbeat that selects `$check-in`
+  may remind about at most one stale skill: choose the oldest one whose `lastReminder` is null.
   In one sentence explain its purpose, give its recorded concrete example, and
   ask whether the user wants to keep, edit, or remove it. Record the reminder
   timestamp after showing it, so it fires once per stale period.
@@ -354,7 +354,9 @@ Approval for one action does not authorize later actions.
 
 ## Plan overview
 
-- Use `$plan-overview` for a recorded portfolio snapshot. It does not refresh
-  live sources or create work.
-- Use `$check-in` when the user wants live or current status. Plans are only
-  for workstreams that need sequencing beyond a project note.
+- Use `$plan-overview` for a portfolio snapshot. It refreshes touched Codex
+  task and authoritative Git or pull-request state, but does not refresh
+  connected sources or create work.
+- Use `$check-in` for broader approved-source refresh or when the user wants
+  live current status. Plans are only for workstreams that need sequencing
+  beyond a project note.
