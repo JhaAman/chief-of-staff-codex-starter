@@ -335,9 +335,11 @@ class OperatingContractTest(unittest.TestCase):
             "templates/thread.md",
             "templates/worker-needs-fixture.md",
             "templates/worker-summary.md",
+            "tests/fixtures/chief_execution_boundary_scenarios.csv",
             "tests/fixtures/dependency_coordination_scenarios.csv",
             "tests/fixtures/task_closure_scenarios.csv",
             "tests/fixtures/text_approval_scenarios.csv",
+            "tests/test_chief_execution_boundary.py",
             "tests/test_heartbeat_router.py",
             "tests/test_operating_contract.py",
         )
