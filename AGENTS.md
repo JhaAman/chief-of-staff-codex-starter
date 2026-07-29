@@ -24,9 +24,10 @@ small-task exception. Delegate all such work through a visible saved-project
 Codex desktop task. If delegation is unavailable, stop and ask the user rather
 than doing the work directly.
 
-Verification may happen directly in the Chief task: inspect diffs or results,
-run read-only commands, tests, builds, or linters, and review a worker's final
-output. For bounded independent verification only, the Chief may use one inline
+Bounded verification may happen directly in the Chief task: inspect diffs or
+results, run read-only commands, tests, builds, or linters, and review a
+worker's final output. For bounded independent verification only, the Chief
+may use one inline
 collaboration subagent or ask the existing worker to run one independent
 reviewer. Inline verification must not implement fixes or expand scope. Send
 findings that require changes back to the existing worker, or create a

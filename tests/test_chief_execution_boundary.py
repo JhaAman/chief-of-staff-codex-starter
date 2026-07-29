@@ -47,6 +47,10 @@ class ChiefExecutionBoundaryTest(unittest.TestCase):
             self.assertRegex(contract, r"task and status (?:state|reconciliation)")
             self.assertRegex(contract, r"routine (?:coordination )?records")
             self.assertIn("bounded verification of another", contract)
+        self.assertIn(
+            "Bounded verification may happen directly in the Chief task",
+            compact(self.agents),
+        )
 
     def test_substantive_read_only_execution_uses_a_visible_task(self):
         for scenario in (
