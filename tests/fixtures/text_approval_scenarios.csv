@@ -1,7 +1,15 @@
 scenario,approval_required,allowed_without_new_approval
-README edit,yes,no
-pull request description edit,yes,no
+organizational repository README edit,yes,no
+team repository pull request description edit,yes,no
+user-designated collaborative personal repository,yes,no
+solo repository README edit,no,yes
+solo repository authorized ready pull request title and description,no,yes
+ambiguous collaboration context,clarification,no
 exact user-supplied text,no,yes if unchanged
+GitHub review comment,independent,no
+resolve review thread,independent,no
+merge,independent,no
+deploy,independent,no
 private ledger row,no,yes
 task-local machine status,no,yes
 test fixture,no,yes

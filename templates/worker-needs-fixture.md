@@ -11,10 +11,12 @@ Use this generic example to verify manual check-in and heartbeat behavior.
 3. After `INTERVIEW_COMPLETE`, withdrawal, or supersession, clear or update the
    waiting state. The next check-in or heartbeat must not display that alert.
 
-4. For `NEEDS_USER_TEXT_APPROVAL`, record the exact target and complete proposed
-   text or exact diff. The Chief must show that text unchanged and wait for
-   approval before the worker changes, commits, pushes, creates, or updates the
-   outward-facing narrative.
+4. For a collaborative repository's `NEEDS_USER_TEXT_APPROVAL`, record the
+   exact target and complete proposed text or exact diff. The Chief must show
+   that text unchanged and wait for approval before the worker changes,
+   commits, pushes, creates, or updates the outward-facing narrative. A solo
+   repository with existing task and publication authority does not create
+   this status solely for concise ordinary repository text.
 
 5. For `WAITING_ON_DEPENDENCY`, record the declared producer, dependent,
    required integrated output, authoritative branch, and stable handoff ID. It
