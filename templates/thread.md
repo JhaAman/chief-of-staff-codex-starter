@@ -32,6 +32,7 @@
 - Branch or artifact:
 - Pull-request expectation: none | prepared locally | explicitly authorized
 - Expected PR state: non-draft ready for review | draft while incomplete | none
+- Collaboration context: collaborative | solo | unclear
 - Review or merge gate:
 
 ## Safety and coordination
@@ -93,14 +94,26 @@
   first enqueue produced no acknowledgement or downstream progress, but only
   while this task is idle or unloaded. An active or terminal task must not
   receive the fallback.
-- Before changing, committing, pushing, creating, or updating a `README.md`,
-  public or user documentation, release notes, or a pull-request title or
-  description, record `NEEDS_USER_TEXT_APPROVAL` with the target and exact
-  proposed text or exact diff. Wait for approval. Exact user text may proceed
-  only unchanged.
+- Classify the destination by collaboration context, not an allowlist.
+  Organizational or work ownership, another human reviewer or maintainer, a
+  team audience, or the user's explicit designation makes a collaborative
+  repository. A clearly user-owned repository with no human-review
+  collaboration is a personal or solo repository.
+- In a collaborative repository, before changing, committing, pushing,
+  creating, or updating a `README.md`, public or user documentation, release
+  notes, changelogs, a pull-request title or description, or comparable
+  durable repository text, record `NEEDS_USER_TEXT_APPROVAL` with the target
+  and exact proposed text or exact diff. Wait for approval.
+- In a personal or solo repository, existing authorization for the task and
+  publication action covers concise ordinary repository text. Proceed without
+  a second text-approval round and open the expected ready pull request when it
+  is authorized and ready.
+- If collaboration context is genuinely ambiguous and changes the workflow,
+  ask one bounded clarification. Exact user-supplied text is authoritative and
+  must be used unchanged.
 - Do not install or connect apps, change automations, send external messages,
-  post comments, merge, deploy, delete, or force-push without explicit
-  authorization for that action.
+  post GitHub review comments or replies, resolve review threads, merge,
+  deploy, delete, or force-push without explicit authorization for that action.
 
 ## Completion report
 
