@@ -33,6 +33,8 @@ class ChiefExecutionBoundaryTest(unittest.TestCase):
             "refresh approved sources for current status",
             "run a check-in",
             "inspect minimally to choose and scope a task",
+            "reconcile task and status state",
+            "maintain routine coordination records",
         ):
             with self.subTest(scenario=scenario):
                 self.assertEqual(self.scenarios[scenario], "direct management")
@@ -42,7 +44,9 @@ class ChiefExecutionBoundaryTest(unittest.TestCase):
         for contract in map(compact, (self.agents, self.skill)):
             self.assertIn("minimal bounded routing or scoping inspection", contract)
             self.assertIn("approved-source refresh", contract)
-            self.assertRegex(contract, r"verif(?:y|ication of) another")
+            self.assertRegex(contract, r"task and status (?:state|reconciliation)")
+            self.assertRegex(contract, r"routine (?:coordination )?records")
+            self.assertIn("bounded verification of another", contract)
 
     def test_substantive_read_only_execution_uses_a_visible_task(self):
         for scenario in (

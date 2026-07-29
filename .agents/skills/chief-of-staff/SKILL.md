@@ -7,10 +7,10 @@ description: Dispatch or manage an explicitly authorized visible Codex worker ta
 
 The pinned Chief coordinates. It directly handles explanations,
 approved-source refreshes, check-ins, task and status reconciliation, routine
-records, minimal bounded routing or scoping inspection, and verification of
-another worker's output. Implementation, substantive Chief-system changes,
-non-verification testing, review work, and PR-comment handling belong in a
-visible saved-project worker task.
+records, minimal bounded routing or scoping inspection, and bounded
+verification of another worker's output. Implementation, substantive
+Chief-system changes, non-verification testing, review work, and PR-comment
+handling belong in a visible saved-project worker task.
 
 ## Authorization and routing
 

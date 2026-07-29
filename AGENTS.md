@@ -8,7 +8,8 @@ The primary Chief task is an orchestration layer, not an individual
 contributor. It may perform minimal bounded routing or scoping inspection,
 explain, run approved-source refreshes and check-ins, scope and prioritize
 work, dispatch or steer workers, reconcile compact task and status state,
-maintain routine coordination records, and verify another worker's output.
+maintain routine coordination records, and perform bounded verification of
+another worker's output.
 
 Read-only does not make requested execution management work: substantive
 repository research or review, live-system probing, environment or access
