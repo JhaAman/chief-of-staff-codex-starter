@@ -45,6 +45,9 @@ in a visible saved-project worker task.
 
 - Workers keep routine progress, completion, PR readiness, dependency waits,
   and ordinary CI or review issues task-local for background inspection.
+- A successful task-message call proves only enqueue acceptance. It does not
+  prove recipient processing, a state transition, user notification, or
+  completion.
 - A worker unable to continue useful work may send one `NEEDS_USER` callback
   for a specific approval, access, decision, or bounded clarification. A
   requested multi-question interview may send one `NEEDS_USER_INTERVIEW`
@@ -54,10 +57,26 @@ in a visible saved-project worker task.
   pull-request readiness, dependency waits, ordinary CI or review issues,
   optional suggestions, and routine status never use a callback.
 - For a declared dependency, the dependent first records
-  `WAITING_ON_DEPENDENCY`. The producer sends `DEPENDENCY_READY` only after
-  the exact output is validated and integrated into the authoritative source.
-  If direct task messaging fails, use one Chief fallback; never infer or wake
-  unrelated work.
+  `WAITING_ON_DEPENDENCY`. After the exact output is validated and integrated,
+  the producer creates one stable handoff ID from the producer task, dependent
+  task, and exact commit or artifact. It sends `DEPENDENCY_READY` once and
+  records `DEPENDENCY_READY_SENT`; send success is not acknowledgement.
+- The dependent verifies the authoritative source, persists its transition out
+  of `WAITING_ON_DEPENDENCY`, and begins downstream work before recording
+  `DEPENDENCY_ACK` with the same handoff ID. A duplicate acknowledged handoff
+  is a no-op and must not reapply work, create another pull request, or restart
+  a terminal outcome.
+- On the next bounded pass, do not send to an active or terminal task. If an
+  idle or unloaded dependent still has the same wait without acknowledgement
+  or downstream progress, send one same-ID fallback and never repeat it.
+  Reconcile valid acknowledgement or exact-artifact use into a stale ledger
+  without another worker turn. If acknowledgement still exposes
+  `WAITING_ON_DEPENDENCY`, resume once with the same handoff ID.
+- After dependencies are consumed, use `WAITING_ON_EXTERNAL` for CI, review,
+  timers, or other non-user conditions. Send a satisfied condition once under
+  a stable resume key, record `EXTERNAL_RESUME_SENT`, and require
+  `EXTERNAL_RESUME_ACK` after the worker leaves the wait. On the next bounded
+  pass, send at most one same-key fallback to an idle or unloaded task.
 - `NEEDS_USER_TEXT_APPROVAL` is required before a worker changes, commits,
   pushes, creates, or updates public documentation, a `README.md`, release
   notes, or a PR title or description. It must include the target and exact
@@ -70,6 +89,12 @@ in a visible saved-project worker task.
   never sleep or poll.
 - The Chief is the sole ledger writer. It repeats unresolved needs until
   answered, withdrawn, or superseded, but does not alert for ordinary progress.
+- When the user answers an ordinary `NEEDS_USER` request, create a stable relay
+  ID, send the exact answer, record `ANSWER_RELAY_SENT`, and stop the user
+  alert. Require `ANSWER_RELAY_ACK` after the worker leaves `NEEDS_USER`. If the
+  next bounded pass finds the same idle or unloaded wait without acknowledgement
+  or downstream progress, send one same-ID fallback without asking the user
+  again; never send to an active or terminal task or repeat the fallback.
 - Before calling a result current, refresh the relevant task and authoritative
   branch or PR state. Reconcile drift by the next meaningful Chief turn or
   hourly heartbeat; otherwise label it `Last known`.
