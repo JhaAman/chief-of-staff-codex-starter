@@ -56,18 +56,96 @@ class OperatingContractTest(unittest.TestCase):
         self.assertIn("Never sleep", self.agents)
         self.assertIn("hourly heartbeat", self.agents)
 
-    def test_text_approval_gates_human_facing_narrative_only(self):
-        for scenario in ("README edit", "pull request description edit"):
+    def test_collaborative_repository_text_waits_for_exact_approval(self):
+        for scenario in (
+            "organizational repository README edit",
+            "team repository pull request description edit",
+            "user-designated collaborative personal repository",
+        ):
             with self.subTest(scenario=scenario):
-                self.assertEqual(self.text_approval[scenario]["approval_required"], "yes")
+                case = self.text_approval[scenario]
+                self.assertEqual(
+                    (case["approval_required"], case["allowed_without_new_approval"]),
+                    ("yes", "no"),
+                )
+        for document in (self.agents, self.chief, self.thread):
+            with self.subTest(document=document[:40]):
+                self.assertIn("NEEDS_USER_TEXT_APPROVAL", document)
+                self.assertIn("exact proposed text or exact diff", compact(document))
+                self.assertIn("collaborative repository", document.lower())
+        self.assertIn("collaborative repository", self.worker_needs)
+
+    def test_solo_repository_text_proceeds_under_existing_authority(self):
+        for scenario in (
+            "solo repository README edit",
+            "solo repository authorized ready pull request title and description",
+        ):
+            with self.subTest(scenario=scenario):
+                case = self.text_approval[scenario]
+                self.assertEqual(
+                    (case["approval_required"], case["allowed_without_new_approval"]),
+                    ("no", "yes"),
+                )
+        for document in (self.agents, self.chief, self.thread):
+            with self.subTest(document=document[:40]):
+                text = compact(document).lower()
+                self.assertIn("personal or solo repository", text)
+                self.assertIn("without a second", text)
+                self.assertIn("expected ready pull request", text)
+        self.assertIn("A solo repository", compact(self.worker_needs))
+
+    def test_repository_classification_asks_when_context_is_ambiguous(self):
+        case = self.text_approval["ambiguous collaboration context"]
+        self.assertEqual(
+            (case["approval_required"], case["allowed_without_new_approval"]),
+            ("clarification", "no"),
+        )
+        for document in (self.agents, self.chief, self.thread):
+            with self.subTest(document=document[:40]):
+                text = compact(document).lower()
+                self.assertIn("collaboration context", text)
+                self.assertIn("organizational or work", text)
+                self.assertIn("another human reviewer or maintainer", text)
+                self.assertIn("bounded clarification", text)
+        self.assertIn(
+            "Collaboration context: collaborative | solo | unclear",
+            self.thread,
+        )
+
+    def test_exact_user_text_can_proceed_only_unchanged(self):
         self.assertEqual(
             self.text_approval["exact user-supplied text"]["allowed_without_new_approval"],
             "yes if unchanged",
         )
         for document in (self.agents, self.chief, self.thread):
             with self.subTest(document=document[:40]):
-                self.assertIn("NEEDS_USER_TEXT_APPROVAL", document)
-                self.assertIn("exact proposed text or exact diff", compact(document))
+                self.assertIn("authoritative", document)
+                self.assertIn("must be used unchanged", document)
+
+    def test_text_policy_does_not_relax_independent_action_gates(self):
+        for scenario in (
+            "GitHub review comment",
+            "resolve review thread",
+            "merge",
+            "deploy",
+        ):
+            with self.subTest(scenario=scenario):
+                case = self.text_approval[scenario]
+                self.assertEqual(
+                    (case["approval_required"], case["allowed_without_new_approval"]),
+                    ("independent", "no"),
+                )
+        for document in (self.agents, self.chief, self.thread):
+            text = compact(document)
+            with self.subTest(document=document[:40]):
+                self.assertIn("GitHub review comments or replies", text)
+                self.assertRegex(text, r"resolv(?:e|ing) review threads")
+                for gate in ("merge", "deploy", "delete"):
+                    self.assertIn(gate, text)
+        for gate in ("Slack or email sends",):
+            with self.subTest(gate=gate):
+                self.assertIn(gate, compact(self.agents))
+                self.assertIn(gate, compact(self.chief))
 
     def test_task_local_status_and_handoffs_avoid_routine_noise(self):
         for document in (self.agents, self.chief, self.check_in, self.thread):

@@ -78,20 +78,35 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
 - Perform one bounded pass only. Never sleep, poll repeatedly, add a daemon,
   or create another automation for freshness.
 
-## Human-facing text approval
+## Repository text approval
 
 - Keep durable outward- or reviewer-facing narrative brief, plain, and fit to
   its purpose.
-- Before changing, committing, pushing, creating, or updating a `README.md`,
-  public or user documentation, release notes, or a pull-request title or
-  description, record `NEEDS_USER_TEXT_APPROVAL` with the target and exact
-  proposed text or exact diff. Wait for the user's approval.
-- Exact user-supplied text may proceed only unchanged. A substantive rewrite
-  requires approval again.
+- Classify the repository by collaboration context before applying an
+  exact-text gate. Organizational or work ownership, another human reviewer or
+  maintainer, a team audience, or the user's explicit designation makes a
+  repository collaborative. A clearly user-owned repository with no
+  human-review collaboration is personal or solo.
+- In a collaborative repository, before changing, committing, pushing,
+  creating, or updating a `README.md`, public or user documentation, release
+  notes, changelogs, a pull-request title or description, or comparable
+  durable repository text, record `NEEDS_USER_TEXT_APPROVAL` with the target
+  and exact proposed text or exact diff. Wait for the user's approval.
+- In a personal or solo repository, existing authorization for the underlying
+  task and publication action also covers concise ordinary repository text.
+  Proceed without a second text-approval round. When an authorized pull request
+  is ready, open the expected ready pull request instead of pausing for title
+  or description approval.
+- If collaboration context is genuinely ambiguous and changes the workflow,
+  ask one bounded clarification instead of guessing.
+- Exact user-supplied text is authoritative and must be used unchanged.
 - This gate does not apply to task-local status, ledger rows, private
   operational notes, test fixtures, generated artifacts, code identifiers, or
-  ordinary code comments. It never authorizes publication, posting, merge,
-  deployment, or another external action.
+  ordinary code comments.
+- This policy does not relax separate approval gates for GitHub review comments
+  or replies, resolving review threads, merge, deploy, delete, Slack or email
+  sends, or another independently gated external action. It does not itself
+  authorize a publication action.
 
 ## Task links
 

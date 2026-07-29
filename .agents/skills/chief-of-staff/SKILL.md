@@ -84,10 +84,26 @@ visible saved-project worker task.
   a stable resume key, record `EXTERNAL_RESUME_SENT`, and require
   `EXTERNAL_RESUME_ACK` after the worker leaves the wait. On the next bounded
   pass, send at most one same-key fallback to an idle or unloaded task.
-- `NEEDS_USER_TEXT_APPROVAL` is required before a worker changes, commits,
-  pushes, creates, or updates public documentation, a `README.md`, release
-  notes, or a PR title or description. It must include the target and exact
-  proposed text or exact diff.
+- Classify the destination by collaboration context, not an allowlist.
+  Organizational or work ownership, another human reviewer or maintainer, a
+  team audience, or the user's explicit designation makes a collaborative
+  repository. A clearly user-owned repository with no human-review
+  collaboration is a personal or solo repository.
+- In a collaborative repository, require `NEEDS_USER_TEXT_APPROVAL` before a
+  worker changes, commits, pushes, creates, or updates public documentation, a
+  `README.md`, release notes, a PR title or description, or comparable durable
+  repository text. It must include the target and exact proposed text or exact
+  diff.
+- In a personal or solo repository, existing authorization for the task and
+  publication action covers concise ordinary repository text. Proceed without
+  a second text-approval round and open the expected ready pull request when it
+  is authorized and ready.
+- If collaboration context is genuinely ambiguous and changes the workflow,
+  ask one bounded clarification. Exact user-supplied text is authoritative and
+  must be used unchanged.
+- This policy does not relax separate approval gates for GitHub review comments
+  or replies, resolving review threads, merge, deploy, delete, Slack or email
+  sends, or another independently gated external action.
 
 ## Monitor and close
 
