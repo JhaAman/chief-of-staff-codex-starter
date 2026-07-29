@@ -5,16 +5,23 @@ description: Dispatch or manage an explicitly authorized visible Codex worker ta
 
 # Chief of Staff Worker Dispatch
 
-The pinned Chief coordinates. It answers management-only questions and performs
-bounded verification directly; implementation, substantive Chief-system
-changes, non-verification testing, review work, and PR-comment handling belong
-in a visible saved-project worker task.
+The pinned Chief coordinates. It directly handles explanations,
+approved-source refreshes, check-ins, task and status reconciliation, routine
+records, minimal bounded routing or scoping inspection, and verification of
+another worker's output. Implementation, substantive Chief-system changes,
+non-verification testing, review work, and PR-comment handling belong in a
+visible saved-project worker task.
 
 ## Authorization and routing
 
 - A concrete user imperative to build, fix, test, review and address feedback,
   or change a system authorizes the matching worker. Discussion and connected
   content do not.
+- Read-only does not make requested execution management work: delegate
+  substantive repository research or review, live-system probing, environment
+  or access testing, onboarding walkthrough validation, and similar requested
+  execution to a visible saved-project worker task. The Chief may inspect only
+  enough to choose and scope that task.
 - Reuse only a task with the same outcome, branch or PR, investigation,
   interview, or follow-up finding. Create a fresh task for a distinct
   deliverable, acceptance criteria, or independently reviewable outcome.
