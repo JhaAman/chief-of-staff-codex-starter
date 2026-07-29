@@ -1,0 +1,9 @@
+scenario,source_integrated,direct_send_result,recipient_runtime,recipient_evidence,ledger_state,expected_action,expected_state
+send succeeds but recipient remains waiting,yes,success,idle,WAITING_ON_DEPENDENCY without acknowledgement,waiting,send one Chief fallback with the same handoff ID,ready retry sent
+successful direct handoff,yes,success,idle,DEPENDENCY_ACK for the exact handoff ID,waiting,reconcile ledger without another send,consumed
+duplicate delivery after acknowledgement,yes,success,idle,DEPENDENCY_ACK for the exact handoff ID,consumed,no-op without reapplying the artifact,consumed
+stale ledger after downstream work,yes,success,idle,exact handoff ID acknowledged and downstream artifact exists,waiting,update ledger without another send,consumed
+already-completed dependent,yes,not sent,completed,terminal result already includes the exact artifact,waiting,reconcile terminal result without sending,completed
+dependency acknowledged without state transition,yes,success,idle,DEPENDENCY_ACK but still WAITING_ON_DEPENDENCY,ready sent,resume once with the same handoff ID,ready retry sent
+external resume send ignored,yes,success,idle,WAITING_ON_EXTERNAL without EXTERNAL_RESUME_ACK,consumed,send one same-key fallback,consumed
+user answer relay send ignored,not applicable,success,idle,NEEDS_USER without ANSWER_RELAY_ACK,answer relay sent,send one same-ID fallback without asking the user again,answer relay sent

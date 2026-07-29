@@ -20,6 +20,13 @@ proportional closure rule in `AGENTS.md`; runtime state alone never proves a
 task terminal. Do not reopen long transcripts, rewrite history, bulk-archive,
 or create routine user noise.
 
+Apply the dependency state machine in `AGENTS.md`: send success is only
+`DEPENDENCY_READY_SENT`; require `DEPENDENCY_ACK` or stronger exact-artifact
+use; repair one idle unacknowledged wait with the same handoff ID; never resend
+to active, acknowledged, or completed tasks; reconcile stale ledger state
+without waking workers; and resume a satisfied `WAITING_ON_EXTERNAL` condition
+once by its stable resume key.
+
 If nothing meaningful happened and nothing needs the user, produce no visible
 summary. Otherwise use only populated sections, in this order:
 

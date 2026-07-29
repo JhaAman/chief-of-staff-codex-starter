@@ -37,8 +37,29 @@ open; one immediate bounded refresh is enough.
   shown as active, unresolved user needs, missing PR state, duplicate or
   superseded tasks, and producers that already handed off.
 - Treat `WAITING_ON_DEPENDENCY` and `DEPENDENCY_READY` as coordination, not a
-  user alert unless the user must act. Verify the exact integrated source before
-  resuming a declared dependent.
+  user alert unless the user must act. A valid handoff names one stable handoff
+  ID and an exact source already integrated into the authoritative branch.
+  Record a successful send as `DEPENDENCY_READY_SENT`; enqueue acceptance is
+  not recipient processing.
+- Require `DEPENDENCY_ACK` with the same handoff ID after source verification.
+  The acknowledgement includes the transition out of
+  `WAITING_ON_DEPENDENCY`; an acknowledgement that still exposes the wait is
+  incomplete. Exact downstream-use evidence for the same artifact also counts.
+- During the bounded pass, do not send to an active dependent. If an idle or
+  unloaded dependent still has the same wait without acknowledgement, verify
+  the source and send one same-ID fallback. Record it so later passes never
+  repeat it. If the dependent already completed the declared outcome, do not
+  send or resume it; reconcile the terminal result.
+- If acknowledgement or exact-artifact use exists while the ledger still says
+  waiting, update the ledger without sending another worker turn. If
+  `DEPENDENCY_ACK` exists but `WAITING_ON_DEPENDENCY` remains, resume once with
+  the same handoff ID. Duplicate delivery after acknowledgement is a no-op.
+- Keep later CI, review, timer, and other non-user waits separate as
+  `WAITING_ON_EXTERNAL`. When the exact condition is satisfied, send one
+  same-task continuation with its stable resume key and record
+  `EXTERNAL_RESUME_SENT`. Require `EXTERNAL_RESUME_ACK` after leaving the wait.
+  On the next bounded pass, send at most one same-key fallback to an idle or
+  unloaded task; never send to an active or terminal task.
 - After current needs, inspect at most three recent terminal-looking unarchived
   tasks using already available evidence. Runtime state is not terminal proof.
   Apply the proportional closure lanes in `AGENTS.md`; leave missing evidence
@@ -55,6 +76,12 @@ open; one immediate bounded refresh is enough.
 - Lead with an unresolved ordinary need using `🚨 CHIEF APPROVAL NEEDED` or
   `🚨 CHIEF INPUT NEEDED`, the linked task, exact action, why, blocked work,
   safe options, and deadline.
+- After the user answers an ordinary request, create a stable relay ID, send
+  the exact answer, record `ANSWER_RELAY_SENT`, and stop repeating the user
+  alert. Require `ANSWER_RELAY_ACK` after the worker leaves `NEEDS_USER`. On the
+  next bounded pass, send one same-ID fallback to an idle or unloaded worker
+  still in the same request without asking the user again; never send to an
+  active or terminal task or repeat the fallback.
 - Keep the rest short: **Big Changes**, relevant workers, source limits, and
   the smallest next action. Use plain language and recognizable subjects.
 - Do not alert for ordinary progress, optional suggestions, archived work, or

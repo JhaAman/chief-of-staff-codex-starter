@@ -17,6 +17,15 @@ Use this generic example to verify manual check-in and heartbeat behavior.
    outward-facing narrative.
 
 5. For `WAITING_ON_DEPENDENCY`, record the declared producer, dependent,
-   required integrated output, and authoritative branch. It remains background
-   coordination unless the user must act. Resume only after verified
-   `DEPENDENCY_READY` evidence names the integrated output.
+   required integrated output, authoritative branch, and stable handoff ID. It
+   remains background coordination unless the user must act. A successful
+   `DEPENDENCY_READY` send becomes `DEPENDENCY_READY_SENT`, not consumption.
+   Record `DEPENDENCY_ACK` only after the dependent verifies the authoritative
+   source and leaves the dependency wait.
+6. If an idle or unloaded dependent still exposes the same unacknowledged wait
+   on the next bounded pass, send one fallback with the same handoff ID and
+   never repeat it. Do not send to active, acknowledged, or terminal tasks.
+7. If acknowledgement or exact-artifact use exists while the ledger still
+   says waiting, reconcile the ledger without waking the worker. Use
+   `WAITING_ON_EXTERNAL` with a stable resume key for later CI, review, timer,
+   or other non-user conditions.

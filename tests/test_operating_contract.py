@@ -1,4 +1,5 @@
 import csv
+import re
 import unittest
 from pathlib import Path
 
@@ -29,8 +30,12 @@ class OperatingContractTest(unittest.TestCase):
         cls.plan = read(".agents/skills/plan-overview/SKILL.md")
         cls.heartbeat = read("automations/heartbeat.md")
         cls.thread = read("templates/thread.md")
+        cls.worker_needs = read("templates/worker-needs-fixture.md")
         cls.summary = read("templates/worker-summary.md")
         cls.closure = scenarios("tests/fixtures/task_closure_scenarios.csv")
+        cls.coordination = scenarios(
+            "tests/fixtures/dependency_coordination_scenarios.csv"
+        )
         cls.text_approval = scenarios("tests/fixtures/text_approval_scenarios.csv")
 
     def test_closure_lanes_preserve_evidence_and_open_work(self):
@@ -69,9 +74,163 @@ class OperatingContractTest(unittest.TestCase):
             with self.subTest(document=document[:40]):
                 self.assertIn("WAITING_ON_DEPENDENCY", document)
                 self.assertIn("DEPENDENCY_READY", document)
+        for state in ("DEPENDENCY_READY_SENT", "DEPENDENCY_ACK"):
+            self.assertIn(state, self.worker_needs)
+        self.assertIn("stable handoff ID", compact(self.worker_needs))
         self.assertIn("background inspection", compact(self.agents))
         self.assertIn("`URGENT_BLOCKER`", self.thread)
         self.assertIn("completion, pull-request readiness", compact(self.agents))
+
+    def test_send_success_is_not_recipient_acknowledgement(self):
+        case = self.coordination["send succeeds but recipient remains waiting"]
+        self.assertEqual(
+            (
+                case["direct_send_result"],
+                case["recipient_evidence"],
+                case["expected_action"],
+            ),
+            (
+                "success",
+                "WAITING_ON_DEPENDENCY without acknowledgement",
+                "send one Chief fallback with the same handoff ID",
+            ),
+        )
+        for document in (self.agents, self.chief, self.thread):
+            with self.subTest(document=document[:40]):
+                self.assertIn("proves only enqueue acceptance", document)
+                self.assertIn("`DEPENDENCY_ACK`", document)
+
+    def test_acknowledged_handoff_reconciles_without_another_send(self):
+        case = self.coordination["successful direct handoff"]
+        self.assertEqual(
+            (case["recipient_evidence"], case["expected_action"], case["expected_state"]),
+            (
+                "DEPENDENCY_ACK for the exact handoff ID",
+                "reconcile ledger without another send",
+                "consumed",
+            ),
+        )
+        self.assertIn("same handoff ID", compact(self.check_in))
+        self.assertIn(
+            "without sending another worker turn",
+            compact(self.check_in),
+        )
+
+    def test_duplicate_delivery_is_idempotent(self):
+        case = self.coordination["duplicate delivery after acknowledgement"]
+        self.assertEqual(
+            (case["ledger_state"], case["expected_action"], case["expected_state"]),
+            (
+                "consumed",
+                "no-op without reapplying the artifact",
+                "consumed",
+            ),
+        )
+        for document in (self.agents, self.thread):
+            with self.subTest(document=document[:40]):
+                self.assertIn(
+                    "same handoff ID is an idempotent no-op",
+                    compact(document),
+                )
+
+    def test_stale_ledger_reconciles_without_waking_the_worker(self):
+        case = self.coordination["stale ledger after downstream work"]
+        self.assertEqual(
+            (case["ledger_state"], case["expected_action"]),
+            ("waiting", "update ledger without another send"),
+        )
+        self.assertIn(
+            "update the ledger without sending another worker turn",
+            self.check_in,
+        )
+
+    def test_completed_dependent_is_not_reawakened(self):
+        case = self.coordination["already-completed dependent"]
+        self.assertEqual(
+            (
+                case["recipient_runtime"],
+                case["direct_send_result"],
+                case["expected_action"],
+            ),
+            (
+                "completed",
+                "not sent",
+                "reconcile terminal result without sending",
+            ),
+        )
+        self.assertIn(
+            "already completed the declared outcome, do not send or resume it",
+            compact(self.check_in),
+        )
+
+    def test_dependency_ack_requires_transition_out_of_wait(self):
+        case = self.coordination[
+            "dependency acknowledged without state transition"
+        ]
+        self.assertEqual(
+            (
+                case["recipient_evidence"],
+                case["expected_action"],
+                case["expected_state"],
+            ),
+            (
+                "DEPENDENCY_ACK but still WAITING_ON_DEPENDENCY",
+                "resume once with the same handoff ID",
+                "ready retry sent",
+            ),
+        )
+        for document in (self.agents, self.thread, self.check_in):
+            with self.subTest(document=document[:40]):
+                self.assertIn(
+                    "acknowledgement includes the transition out of "
+                    "`WAITING_ON_DEPENDENCY`",
+                    compact(document),
+                )
+
+    def test_ignored_external_resume_gets_one_same_key_fallback(self):
+        case = self.coordination["external resume send ignored"]
+        self.assertEqual(
+            (case["recipient_evidence"], case["expected_action"]),
+            (
+                "WAITING_ON_EXTERNAL without EXTERNAL_RESUME_ACK",
+                "send one same-key fallback",
+            ),
+        )
+        for document in (self.agents, self.thread, self.check_in):
+            with self.subTest(document=document[:40]):
+                self.assertIn("`EXTERNAL_RESUME_SENT`", document)
+                self.assertIn("`EXTERNAL_RESUME_ACK`", document)
+        self.assertIn(
+            "only while this task is idle or unloaded",
+            compact(self.thread),
+        )
+        self.assertIn(
+            "active or terminal task must not receive the fallback",
+            compact(self.thread),
+        )
+
+    def test_ignored_user_answer_gets_one_same_id_fallback(self):
+        case = self.coordination["user answer relay send ignored"]
+        self.assertEqual(
+            (case["recipient_evidence"], case["expected_action"]),
+            (
+                "NEEDS_USER without ANSWER_RELAY_ACK",
+                "send one same-ID fallback without asking the user again",
+            ),
+        )
+        for document in (self.agents, self.chief, self.check_in):
+            with self.subTest(document=document[:40]):
+                self.assertIn("`ANSWER_RELAY_SENT`", document)
+                self.assertIn("`ANSWER_RELAY_ACK`", document)
+                self.assertIn("without asking the user again", compact(document))
+        self.assertIn(
+            "only while this task is idle or unloaded",
+            compact(self.thread),
+        )
+        self.assertIn(
+            "active or terminal task must not receive the fallback",
+            compact(self.thread),
+        )
 
     def test_plan_overview_refreshes_task_and_git_state_not_connected_sources(self):
         compact_agents = compact(self.agents)
@@ -98,6 +257,7 @@ class OperatingContractTest(unittest.TestCase):
             "templates/thread.md",
             "templates/worker-needs-fixture.md",
             "templates/worker-summary.md",
+            "tests/fixtures/dependency_coordination_scenarios.csv",
             "tests/fixtures/task_closure_scenarios.csv",
             "tests/fixtures/text_approval_scenarios.csv",
             "tests/test_heartbeat_router.py",
@@ -107,6 +267,13 @@ class OperatingContractTest(unittest.TestCase):
         for forbidden in ("Am" "an", "Jha" "Am" "an", "/" "Users/", "magic" "product"):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, changed_surfaces)
+        for private_identifier in (
+            r"\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b",
+            r"\b[0-9a-f]{40}\b",
+            r"chief-of-staff-" r"vault",
+        ):
+            with self.subTest(private_identifier=private_identifier):
+                self.assertIsNone(re.search(private_identifier, changed_surfaces))
 
 
 if __name__ == "__main__":

@@ -10,11 +10,15 @@ Completed: YYYY-MM-DD
 
 ## Definition of done
 
-- Status: completed | NEEDS_USER | NEEDS_USER_INTERVIEW | NEEDS_USER_TEXT_APPROVAL | WAITING_ON_DEPENDENCY | blocked | abandoned | superseded
+- Status: completed | NEEDS_USER | ANSWER_RELAY_SENT | ANSWER_RELAY_ACK | NEEDS_USER_INTERVIEW | NEEDS_USER_TEXT_APPROVAL | WAITING_ON_DEPENDENCY | DEPENDENCY_READY_SENT | DEPENDENCY_ACK | WAITING_ON_EXTERNAL | EXTERNAL_RESUME_SENT | EXTERNAL_RESUME_ACK | blocked | abandoned | superseded
 - Result:
 - Blocker: None | <exact blocker>
 - Dependency: None | <required task or external dependency>
+- Dependency state: not applicable | WAITING_ON_DEPENDENCY | DEPENDENCY_READY_SENT | DEPENDENCY_ACK | consumed
+- Handoff ID: None | <producer task -> dependent task -> exact commit or artifact>
 - Integrated dependency source: None | <authoritative branch and exact commit or artifact>
+- External wait: None | <stable resume key, exact condition, authoritative evidence source, and whether the user must act>
+- Relay acknowledgement: None | <answer-relay or external-resume ID, state transition, and downstream evidence>
 - Validated commit SHA: None | <full SHA>
 - Branch: None | <branch>
 - Pull request: None | <URL>

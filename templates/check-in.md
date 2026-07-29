@@ -24,6 +24,13 @@
 - _Treat `WAITING_ON_DEPENDENCY` and `DEPENDENCY_READY` as coordination, not a
   user alert unless the user must act. Accept readiness only after the exact
   validated output is integrated into the authoritative branch._
+- _Treat a successful send as `DEPENDENCY_READY_SENT` until the dependent
+  records `DEPENDENCY_ACK` for the same handoff ID or exposes stronger
+  exact-artifact use. Repair one idle unacknowledged wait on the next bounded
+  pass; never resend to active, acknowledged, or completed tasks._
+- _Resume a satisfied `WAITING_ON_EXTERNAL` condition once in the same task by
+  its stable resume key. Do not mislabel CI or review waiting as a dependency
+  wait._
 
 ## Closure maintenance
 

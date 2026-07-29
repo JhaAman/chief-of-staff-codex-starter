@@ -63,8 +63,9 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
   landed dependencies still shown as waiting, completed tasks still marked
   active, unresolved user needs, missing PR state, and duplicate or superseded
   tasks.
-- A verified `DEPENDENCY_READY` handoff may resume its declared dependent
-  immediately. The ledger can catch up on the next Chief turn or heartbeat.
+- A direct `DEPENDENCY_READY` send stays pending until the dependent
+  acknowledges the exact handoff or exposes stronger downstream-use evidence.
+  The ledger can catch up on the next Chief turn or heartbeat.
 - If refresh is unavailable, label the result `Last known`, state when it was
   checked, and name the missing source. Do not imply instant freshness.
 - Perform one bounded pass only. Never sleep, poll repeatedly, add a daemon,
@@ -244,13 +245,38 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
   task, action, why, blocked work, safe options, and deadline. A requested
   multi-question interview may likewise send one `NEEDS_USER_INTERVIEW`
   callback without reproducing any question. Silence is never approval.
+- A successful task-message call proves only enqueue acceptance. It does not
+  prove the recipient processed the message, changed state, notified the user,
+  or completed work.
 - `URGENT_BLOCKER` is separate and reserved for material time-sensitive harm;
   it includes the linked task, exact action, harm, safe options, and deadline.
   Completion, PR readiness, dependency or capacity waits, normal CI or review
   issues, optional suggestions, and ordinary status never use a callback.
 - For a declared unavailable dependency, record `WAITING_ON_DEPENDENCY` once.
-  Send `DEPENDENCY_READY` only after the exact output is validated and
-  integrated into the authoritative branch; never infer or wake unrelated work.
+  After the exact output is validated and integrated into the authoritative
+  branch, create one stable handoff ID from the producer task, dependent task,
+  and exact commit or artifact. Send `DEPENDENCY_READY` once and record
+  `DEPENDENCY_READY_SENT`; enqueue acceptance is not recipient processing.
+- The dependent verifies the authoritative source, leaves
+  `WAITING_ON_DEPENDENCY`, and begins downstream work before recording
+  `DEPENDENCY_ACK` with the same handoff ID. Re-delivery of the same handoff ID
+  is an idempotent no-op after acknowledgement or exact-artifact use; never
+  reapply work, create a duplicate pull request, or restart a terminal outcome.
+- On the next bounded coordination pass, do not send to an active or terminal
+  dependent. If an idle or unloaded dependent still has the same dependency
+  wait without acknowledgement or downstream progress, send one fallback with
+  the same handoff ID and never repeat it. If valid acknowledgement or
+  downstream work exists while the ledger is stale, reconcile the ledger
+  without waking the worker. An acknowledgement includes the transition out
+  of `WAITING_ON_DEPENDENCY`; if that wait remains, resume once with the same
+  handoff ID.
+- After dependencies are consumed, use `WAITING_ON_EXTERNAL` for CI, review,
+  timers, or other non-user conditions. Name one stable resume key and exact
+  evidence source. When the condition is satisfied, send one same-task
+  continuation and record `EXTERNAL_RESUME_SENT`; record
+  `EXTERNAL_RESUME_ACK` only after leaving the wait. On the next bounded pass,
+  send at most one same-key fallback to an idle or unloaded task, never to an
+  active or terminal task.
 - For an explicitly requested multi-question interview, the worker conducts it
   in its own visible task, asks one concise question at a time, and records
   `NEEDS_USER_INTERVIEW` with a task link before waiting idle. The Chief shows
@@ -265,6 +291,14 @@ Workers may own their own waiting, polling, delayed retries, and callbacks.
   `Blocked`; repeat it until resolved, withdrawn, or superseded. Steer only for
   a user scope change, a worker decision request, or a real blocker or
   wrong-scope discovery.
+- When the user answers an ordinary `NEEDS_USER` request, create a stable relay
+  ID from the task and request, send the exact answer, record
+  `ANSWER_RELAY_SENT`, and stop repeating the user alert. Keep the relay
+  pending until `ANSWER_RELAY_ACK` shows the worker left `NEEDS_USER`, or
+  stronger downstream progress, withdrawal, or supersession appears. On the
+  next bounded pass, send one same-ID fallback to an idle or unloaded task
+  still in the same wait, without asking the user again; never send to an
+  active or terminal task and never repeat the fallback.
 - Dispatch independent authorized tasks promptly up to available platform
   capacity. After the minimum ledger update, yield the primary Chief turn. If
   capacity is exhausted, record or queue work visibly and report the real limit;
@@ -346,9 +380,10 @@ Approval for one action does not authorize later actions.
   or not loaded. Also scan durable `threads/index.md` rows marked `Waiting for
   user — <exact need>`. Repeat each unanswered `🚨 CHIEF APPROVAL NEEDED` alert
   until answered, withdrawn, or superseded, even when other unchanged status is
-  deduplicated. After relaying an answer, clear or update the ledger state so
-  the alert stops. Ignore optional suggestions, ordinary progress, archived
-  work, and cancelled work.
+  deduplicated. After relaying an answer, stop the user alert but keep its
+  stable `ANSWER_RELAY_SENT` state pending until `ANSWER_RELAY_ACK` or stronger
+  downstream evidence appears. Ignore optional suggestions, ordinary progress,
+  archived work, and cancelled work.
 - Heartbeats must remain read-oriented and must not create workers or perform
   external actions.
 
