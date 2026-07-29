@@ -1,12 +1,12 @@
 # Chief of Staff for Codex
 
-This starter lets you run a personal Chief of Staff inside one pinned Codex task. Most of the time, that is the only task you need to talk to: give it work, ask questions, or request an update, and it manages the rest.
+This starter lets you run a personal Chief of Staff inside one pinned Codex task. This is the only task you need to talk to: give it work, ask questions, or request an update, and it manages the rest.
 
-The Chief uses a private, Git-backed **vault** as its memory. It keeps track of your priorities, active work, approved sources, worker tasks, preferences, and reusable skills.
+The Chief uses a private, git-backed **Vault** as its memory. It keeps track of your priorities, active work, workers, preferences, and skills.
 
 ## Start here
 
-1. Clone the starter and disconnect it from the public repository before adding personal information.
+1. Clone the starter and disconnect it from this repo (for privacy).
 
    ```bash
    git clone https://github.com/JhaAman/chief-of-staff-codex-starter.git my-chief-of-staff
@@ -14,7 +14,7 @@ The Chief uses a private, Git-backed **vault** as its memory. It keeps track of 
    git remote remove origin
    ```
 
-   Never push your personal vault to a public fork. You can connect it to a private backup repository after setup.
+   Never push your personal vault as a public fork.
 
 2. Open `my-chief-of-staff` as a local Codex project.
 
@@ -26,11 +26,11 @@ The Chief uses a private, Git-backed **vault** as its memory. It keeps track of 
    Read AGENTS.md, then use $bootstrap-chief-of-staff to set up my private Chief of Staff vault. Interview me one question at a time. Keep the proposal small, explain a connector only when it unlocks a useful workflow, and ask before saving anything, connecting a source, creating a worker, or enabling an automation. After I approve the setup, apply it, run one safe first $check-in, and tell me the smallest next step.
    ```
 
-5. Answer the interview and approve or edit its proposed setup.
+5. Answer the interview and approve/edit the proposed setup.
 
-6. Return to the pinned Chief task whenever you want to assign work, ask what needs attention, or change how your Chief operates.
+6. Message pinned Chief task to assign work.
 
-That is enough to get started. Connectors such as GitHub, Slack, Google Drive, and Calendar are optional; add them only when they unlock something useful.
+That is enough to get started. To improve quality, add Connectors such as GitHub, Slack, Google Drive, Calendar etc. These focus the Chief on your priorities. I would also setup the [heartbeat](automations/heartbeat.md) to run check-ins automatically every hour - you can ask your Chief to set that up. 
 
 ## How it works
 
@@ -51,7 +51,3 @@ That is enough to get started. Connectors such as GitHub, Slack, Google Drive, a
 The optional [heartbeat](automations/heartbeat.md) can run check-ins automatically, but it starts disabled.
 
 For the file layout and daily workflow, read [the vault guide](GUIDE.md). For the complete operating rules, read [AGENTS.md](AGENTS.md).
-
-## License
-
-MIT. See [LICENSE](LICENSE).
