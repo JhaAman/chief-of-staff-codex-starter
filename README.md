@@ -4,6 +4,13 @@ This starter lets you run a personal Chief of Staff inside one pinned Codex task
 
 The Chief uses a private, git-backed **Vault** as its memory. It keeps track of your priorities, active work, workers, preferences, and skills.
 
+
+## Why bother?
+
+- I don't have to manage as much context in my head
+- I don't have to write as detailed prompts, since Chief adds all the details itself
+- I've become much more productive, without overloading my brain
+
 ## Start here
 
 1. Clone the starter and disconnect it from this repo (for privacy).
@@ -32,6 +39,13 @@ The Chief uses a private, git-backed **Vault** as its memory. It keeps track of 
 
 That is enough to get started. To improve quality, add Connectors such as GitHub, Slack, Google Drive, Calendar etc. These focus the Chief on your priorities. I would also setup the [heartbeat](automations/heartbeat.md) to run check-ins automatically every hour - you can ask your Chief to set that up. 
 
+## Useful commands
+
+- `$check-in` — refresh what needs your attention.
+- `$plan-overview` — see your current projects and what is next.
+- `$end-of-day-summary` — produce a concise workday closeout.
+- `$token-usage` — inspect the Chief’s token usage and estimated API-rate cost.
+
 ## How it works
 
 - The Chief manages work; separate visible worker tasks implement it.
@@ -40,13 +54,6 @@ That is enough to get started. To improve quality, add Connectors such as GitHub
 - You should rarely need to open worker tasks yourself, except for longer interviews.
 - Your preferences become durable instructions in the private vault, so the system can adapt as you use it.
 - Sending messages, posting comments, merging, deploying, connecting sources, and other important external actions still require your approval.
-
-## Useful commands
-
-- `$check-in` — refresh what needs your attention.
-- `$plan-overview` — see your current projects and what is next.
-- `$end-of-day-summary` — produce a concise workday closeout.
-- `$token-usage` — inspect the Chief’s token usage and estimated API-rate cost.
 
 The optional [heartbeat](automations/heartbeat.md) can run check-ins automatically, but it starts disabled.
 
