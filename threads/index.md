@@ -1,19 +1,24 @@
 # Worker Task Index
 
-Do not add sample history. Record a worker only after the user explicitly
-authorizes it and the task is created. Use `Chief-created` for a task created
-by the Chief and `manual` for the fallback the user creates themselves.
+The Chief is the only ledger writer. Record a worker only after the user
+authorizes it and the visible task exists. Workers keep routine progress,
+dependencies, and completion evidence task-local.
 
-For an unresolved user approval, input, access, or decision, set State to
-`Waiting for user — <exact approval or input>`, not vague `Blocked`. Clear it
-only after the Chief relays the user's answer to the worker. Check-ins and
-heartbeats scan every approved, non-archived row with this state regardless of
-the runtime task status; ignore archived or cancelled work.
+## Current Context
 
-Workers record task-local status and final reports; the Chief alone writes this
-ledger. In user-facing reports, reference a known task from this index as
-`[Task title](codex://threads/<thread-id>)`; if its ID is absent, say its link
-is pending. Do not present only a raw task ID.
+Keep only active, waiting, externally blocked, or otherwise genuinely current
+tasks here. Default check-ins and overviews read this section. Set `Notify` to
+`Blockers only` unless a high-priority task is actively awaited, in which case
+use `Notify on completion`.
 
-| Task | Origin | Project | Outcome | State | Codex task link | Worktree or branch | Pull request | Last checked | Result |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Task | Origin | Project | Outcome | State | Notify | Codex task link | Worktree or branch | Pull request | Last checked | Result |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+## History
+
+Keep every other linked result here with enough context to be understandable.
+History is consulted for named tasks, projects, and dependencies; moving a row
+here never archives its Codex desktop task.
+
+| Task | Origin | Project | Outcome | State | Notify | Codex task link | Worktree or branch | Pull request | Last checked | Result |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

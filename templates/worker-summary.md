@@ -7,6 +7,9 @@ Task: [<task title>](codex://threads/<task-id>)
 Project:
 Repository:
 Completed: YYYY-MM-DD
+Notification mode: Blockers only | Notify on completion
+Completed at: None | <exact timestamp>
+Chief notified at: None | <exact timestamp>
 
 ## Definition of done
 
