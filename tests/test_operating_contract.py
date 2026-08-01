@@ -61,6 +61,9 @@ class OperatingContractTest(unittest.TestCase):
         self.assertIn("Pre-change history is `Unknown`", self.quality)
         self.assertIn("Silence is not evidence", self.quality)
 
+    def test_readme_does_not_claim_causal_productivity_gain(self):
+        self.assertNotIn("more productive", read("README.md").lower())
+
     def test_public_contract_has_no_private_sync_identifiers(self):
         artifacts = (
             "AGENTS.md",
@@ -71,6 +74,11 @@ class OperatingContractTest(unittest.TestCase):
             "threads/index.md",
             "reports/quality.md",
             "templates/thread.md",
+            "templates/worker-needs-fixture.md",
+            "templates/worker-summary.md",
+            "tests/fixtures/chief_execution_boundary_scenarios.csv",
+            "tests/test_chief_execution_boundary.py",
+            "tests/test_heartbeat_router.py",
         )
         text = "\n".join(read(path) for path in artifacts)
         for forbidden in ("chief-of-staff-vault", "/Users/"):

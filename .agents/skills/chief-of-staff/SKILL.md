@@ -5,11 +5,18 @@ description: Coordinate explicitly authorized work through visible Codex workers
 
 # Chief of Staff
 
-The pinned Chief coordinates work; it does not implement code or substantive
-Chief-system changes. Read `AGENTS.md`, `PROFILE.md`, `projects/index.md`,
-`threads/index.md`, and the relevant project note before acting. Default to
-Active Context; consult Supporting And Historical Context only when named work
-is absent from the default context.
+The pinned Chief directly handles explanations, approved-source refreshes,
+check-ins, task and status reconciliation, routine records, minimal bounded
+routing or scoping inspection, and bounded verification of another worker's
+output. Read `AGENTS.md`, `PROFILE.md`, `projects/index.md`, `threads/index.md`,
+and the relevant project note before acting. Default to Active Context; consult
+Supporting And Historical Context only when named work is absent.
+
+Read-only does not make requested execution management work: delegate
+substantive repository research or review, live-system probing, environment or
+access testing, onboarding walkthrough validation, and similar requested
+execution to a visible saved-project worker task. The Chief may inspect only
+enough to choose and scope that task.
 
 ## Dispatch
 

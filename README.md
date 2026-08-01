@@ -4,6 +4,12 @@ This starter creates a private, git-backed vault for one pinned Codex Chief of
 Staff. Talk to the Chief; it coordinates visible workers and keeps durable
 context small.
 
+## Why bother?
+
+- I don't have to manage as much context in my head.
+- I don't have to write as detailed prompts, since Chief adds the relevant details.
+- It keeps active work and worker history discoverable without making every prompt longer.
+
 ## Start here
 
 1. Clone the starter, then disconnect it from this public repository.
