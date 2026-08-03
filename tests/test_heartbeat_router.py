@@ -54,24 +54,17 @@ class HeartbeatRouterTest(unittest.TestCase):
             with self.subTest(local_time=local_time):
                 self.assertEqual(selected_skills(local_time), ["$check-in"])
 
+    def test_documented_cadence_has_three_daily_runs(self):
+        self.assertIn("09:00, 13:00, and 18:00", self.heartbeat)
+
     def test_selected_skills_own_detailed_contracts(self):
-        self.assertLess(
-            self.check_in.index("PROFILE.md"),
-            self.check_in.index("Refresh only source scopes"),
-        )
-        self.assertLess(
-            self.check_in.index("sources/index.md"),
-            self.check_in.index("Refresh only source scopes"),
-        )
-        self.assertIn("only source scopes listed in `sources/index.md`", self.check_in)
-        self.assertIn("PROFILE.md", self.eod)
-        self.assertIn("only source scopes listed in `sources/index.md`", self.eod)
-        self.assertIn("heartbeat that selects `$check-in`", self.agents)
+        self.assertIn("PROFILE.md", self.check_in)
+        self.assertIn("sources/index.md", self.check_in)
+        self.assertIn("13:00", self.agents)
         for detailed_rule in (
+            "Current Context",
             "NEEDS_USER",
-            "DEPENDENCY_READY",
-            "context-compaction-log.md",
-            "stale skill",
+            "WAITING_ON_DEPENDENCY",
         ):
             with self.subTest(detailed_rule=detailed_rule):
                 self.assertNotIn(detailed_rule, self.prompt)

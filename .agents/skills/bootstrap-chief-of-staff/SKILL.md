@@ -13,7 +13,7 @@ saved, connected, or scheduled.
 
 Gather only enough to establish:
 
-- current responsibilities and three to seven active workstreams;
+- current responsibilities and a small Active Context plus supporting work;
 - important people or groups;
 - failures, delays, or surprises the user is afraid of missing;
 - narrow repositories, channels, mailboxes, documents, calendars, trackers, or
@@ -32,9 +32,11 @@ After the interview, propose:
 
 1. Changes to `PROFILE.md`.
 2. Three to seven notes based on `templates/project.md`.
-3. Rows for `projects/index.md` and `sources/index.md`.
+3. Active Context and Supporting And Historical Context rows for
+   `projects/index.md`, plus `sources/index.md`.
 4. The smallest useful connector set, with one workflow per connector.
-5. Notification rules and, only if useful, an optional heartbeat cadence.
+5. `Blockers only` notification by default, optional `Notify on completion`
+   for actively awaited work, and an optional 09:00/13:00/18:00 heartbeat.
 
 Explain a connector only when it unlocks a named workflow. Keep the first
 proposal usable without connectors. Treat a private backup remote as a setup

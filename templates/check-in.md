@@ -2,7 +2,7 @@
 
 - Date and time: YYYY-MM-DD HH:MM TIMEZONE
 - Scope:
-- Projects:
+- Projects: Active Context by default; named supporting projects when needed
 - Freshness: refreshed | Last known — <time and missing source>
 
 ## Needs you now
@@ -21,6 +21,10 @@
 ## Workers
 
 - _Include only a completed, blocked, or steerable task that matters now._
+- _Read Current Context by default; consult History only for named work,
+  projects, or dependencies._
+- _Validate `TASK_COMPLETED` against `Notify on completion`; surface Blockers
+  only completion in this bounded check-in._
 - _Treat `WAITING_ON_DEPENDENCY` and `DEPENDENCY_READY` as coordination, not a
   user alert unless the user must act. Accept readiness only after the exact
   validated output is integrated into the authoritative branch._
@@ -36,6 +40,11 @@
 
 - _Omit when no durable record changed. For at most three scanned tasks, record
   the closure lane, evidence used, missing evidence, and archive decision._
+
+## Chief quality
+
+- _At 18:00, record only changed evidence from `reports/quality.md`; do not
+  emit a healthy or unknown status merely to fill this section._
 
 ## Details for follow-up
 

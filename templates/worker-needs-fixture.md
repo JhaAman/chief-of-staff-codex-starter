@@ -31,3 +31,7 @@ Use this generic example to verify manual check-in and heartbeat behavior.
    says waiting, reconcile the ledger without waking the worker. Use
    `WAITING_ON_EXTERNAL` with a stable resume key for later CI, review, timer,
    or other non-user conditions.
+
+8. Record `Blockers only` for ordinary workers. A completion callback is valid
+   only for `Notify on completion` after the Acceptance contract passes; record
+   its exact completion and Chief-notification timestamps in `reports/quality.md`.

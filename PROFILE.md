@@ -10,7 +10,7 @@
 
 ## Active priorities
 
-Keep three to seven.
+Keep a small Active Context; retain supporting work in `projects/index.md`.
 
 - _Add during onboarding._
 
@@ -31,6 +31,11 @@ Keep three to seven.
 ### Ignore
 
 - _Add during onboarding._
+
+### Worker notifications
+
+- Default: Blockers only.
+- Notify on completion only for high-priority work I am actively awaiting.
 
 ## Worker authorization
 

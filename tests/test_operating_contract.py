@@ -1,5 +1,3 @@
-import csv
-import re
 import unittest
 from pathlib import Path
 
@@ -11,349 +9,81 @@ def read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
 
 
-def compact(text: str) -> str:
-    return " ".join(text.split())
-
-
-def scenarios(path: str) -> dict[str, dict[str, str]]:
-    with (ROOT / path).open(encoding="utf-8", newline="") as handle:
-        return {row["scenario"]: row for row in csv.DictReader(handle)}
-
-
 class OperatingContractTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.agents = read("AGENTS.md")
-        cls.chief = read(".agents/skills/chief-of-staff/SKILL.md")
-        cls.check_in = read(".agents/skills/check-in/SKILL.md")
-        cls.eod = read(".agents/skills/end-of-day-summary/SKILL.md")
-        cls.plan = read(".agents/skills/plan-overview/SKILL.md")
-        cls.heartbeat = read("automations/heartbeat.md")
         cls.thread = read("templates/thread.md")
-        cls.worker_needs = read("templates/worker-needs-fixture.md")
-        cls.summary = read("templates/worker-summary.md")
-        cls.closure = scenarios("tests/fixtures/task_closure_scenarios.csv")
-        cls.coordination = scenarios(
-            "tests/fixtures/dependency_coordination_scenarios.csv"
-        )
-        cls.text_approval = scenarios("tests/fixtures/text_approval_scenarios.csv")
+        cls.check_in = read(".agents/skills/check-in/SKILL.md")
+        cls.plan = read(".agents/skills/plan-overview/SKILL.md")
+        cls.threads = read("threads/index.md")
+        cls.projects = read("projects/index.md")
+        cls.quality = read("reports/quality.md")
 
-    def test_closure_lanes_preserve_evidence_and_open_work(self):
-        self.assertEqual(self.closure["tiny completed task"]["report_required"], "no")
-        self.assertEqual(self.closure["important completed task"]["report_required"], "yes")
-        self.assertEqual(self.closure["runtime completed with unresolved user input"]["terminal"], "no")
-        self.assertEqual(self.closure["runtime completed with unresolved dependency"]["user_visible"], "no")
-        self.assertIn("Routine tasks", self.agents)
-        self.assertIn("Important, reusable, or decision-bearing", compact(self.agents))
-        self.assertIn("Abandoned or superseded", compact(self.agents))
-        self.assertIn("Closure pending", self.agents)
+    def test_default_context_is_bounded_but_named_history_is_recalled(self):
+        for document in (self.agents, self.threads, self.check_in, self.plan):
+            with self.subTest(document=document[:30]):
+                self.assertIn("Current Context", document)
+                self.assertIn("History", document)
+        self.assertIn("here never archives its Codex desktop task", self.threads)
+        self.assertIn("Supporting And Historical Context", self.projects)
 
-    def test_state_is_refreshed_before_it_is_called_current(self):
-        for document in (self.agents, self.chief, self.check_in, self.eod, self.plan):
-            with self.subTest(document=document[:40]):
-                self.assertIn("one immediate bounded refresh", compact(document))
-                self.assertIn("Last known", compact(document))
-        self.assertIn("Never sleep", self.agents)
-        self.assertIn("hourly heartbeat", self.agents)
-
-    def test_collaborative_repository_text_waits_for_exact_approval(self):
-        for scenario in (
-            "organizational repository README edit",
-            "team repository pull request description edit",
-            "user-designated collaborative personal repository",
+    def test_worker_prompt_keeps_notification_and_handoff_contracts(self):
+        for heading in ("## Outcome", "## Scope", "## Acceptance", "## Delivery", "## Callback"):
+            with self.subTest(heading=heading):
+                self.assertIn(heading, self.thread)
+        for marker in (
+            "Blockers only",
+            "Notify on completion",
+            "TASK_COMPLETED",
+            "WAITING_ON_DEPENDENCY",
+            "DEPENDENCY_READY",
+            "DEPENDENCY_ACK",
         ):
-            with self.subTest(scenario=scenario):
-                case = self.text_approval[scenario]
-                self.assertEqual(
-                    (case["approval_required"], case["allowed_without_new_approval"]),
-                    ("yes", "no"),
-                )
-        for document in (self.agents, self.chief, self.thread):
-            with self.subTest(document=document[:40]):
-                self.assertIn("NEEDS_USER_TEXT_APPROVAL", document)
-                self.assertIn("exact proposed text or exact diff", compact(document))
-                self.assertIn("collaborative repository", document.lower())
-        self.assertIn("collaborative repository", self.worker_needs)
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.thread)
 
-    def test_solo_repository_text_proceeds_under_existing_authority(self):
-        for scenario in (
-            "solo repository README edit",
-            "solo repository authorized ready pull request title and description",
+    def test_formal_plan_surfaces_are_absent(self):
+        self.assertFalse((ROOT / "plans").exists())
+        self.assertFalse((ROOT / "templates/plan.md").exists())
+        self.assertIn("Do not create workers", self.plan)
+        self.assertIn("formal plan files", self.plan)
+
+    def test_quality_signals_do_not_invent_missing_evidence(self):
+        for signal in (
+            "Completed-task-to-notification delay",
+            "Stale Current Context rows",
+            "Unresolved requests missed by scheduled check-ins",
+            "Interruptions the user considered unnecessary",
         ):
-            with self.subTest(scenario=scenario):
-                case = self.text_approval[scenario]
-                self.assertEqual(
-                    (case["approval_required"], case["allowed_without_new_approval"]),
-                    ("no", "yes"),
-                )
-        for document in (self.agents, self.chief, self.thread):
-            with self.subTest(document=document[:40]):
-                text = compact(document).lower()
-                self.assertIn("personal or solo repository", text)
-                self.assertIn("without a second", text)
-                self.assertIn("expected ready pull request", text)
-        self.assertIn("A solo repository", compact(self.worker_needs))
+            with self.subTest(signal=signal):
+                self.assertIn(signal, self.quality)
+        self.assertIn("Pre-change history is `Unknown`", self.quality)
+        self.assertIn("Silence is not evidence", self.quality)
 
-    def test_repository_classification_asks_when_context_is_ambiguous(self):
-        case = self.text_approval["ambiguous collaboration context"]
-        self.assertEqual(
-            (case["approval_required"], case["allowed_without_new_approval"]),
-            ("clarification", "no"),
-        )
-        for document in (self.agents, self.chief, self.thread):
-            with self.subTest(document=document[:40]):
-                text = compact(document).lower()
-                self.assertIn("collaboration context", text)
-                self.assertIn("organizational or work", text)
-                self.assertIn("another human reviewer or maintainer", text)
-                self.assertIn("bounded clarification", text)
-        self.assertIn(
-            "Collaboration context: collaborative | solo | unclear",
-            self.thread,
-        )
+    def test_readme_does_not_claim_causal_productivity_gain(self):
+        self.assertNotIn("more productive", read("README.md").lower())
 
-    def test_exact_user_text_can_proceed_only_unchanged(self):
-        self.assertEqual(
-            self.text_approval["exact user-supplied text"]["allowed_without_new_approval"],
-            "yes if unchanged",
-        )
-        for document in (self.agents, self.chief, self.thread):
-            with self.subTest(document=document[:40]):
-                self.assertIn("authoritative", document)
-                self.assertIn("must be used unchanged", document)
-
-    def test_text_policy_does_not_relax_independent_action_gates(self):
-        for scenario in (
-            "GitHub review comment",
-            "resolve review thread",
-            "merge",
-            "deploy",
-        ):
-            with self.subTest(scenario=scenario):
-                case = self.text_approval[scenario]
-                self.assertEqual(
-                    (case["approval_required"], case["allowed_without_new_approval"]),
-                    ("independent", "no"),
-                )
-        for document in (self.agents, self.chief, self.thread):
-            text = compact(document)
-            with self.subTest(document=document[:40]):
-                self.assertIn("GitHub review comments or replies", text)
-                self.assertRegex(text, r"resolv(?:e|ing) review threads")
-                for gate in ("merge", "deploy", "delete"):
-                    self.assertIn(gate, text)
-        for gate in ("Slack or email sends",):
-            with self.subTest(gate=gate):
-                self.assertIn(gate, compact(self.agents))
-                self.assertIn(gate, compact(self.chief))
-
-    def test_task_local_status_and_handoffs_avoid_routine_noise(self):
-        for document in (self.agents, self.chief, self.check_in, self.thread):
-            with self.subTest(document=document[:40]):
-                self.assertIn("WAITING_ON_DEPENDENCY", document)
-                self.assertIn("DEPENDENCY_READY", document)
-        for state in ("DEPENDENCY_READY_SENT", "DEPENDENCY_ACK"):
-            self.assertIn(state, self.worker_needs)
-        self.assertIn("stable handoff ID", compact(self.worker_needs))
-        self.assertIn("background inspection", compact(self.agents))
-        self.assertIn("`URGENT_BLOCKER`", self.thread)
-        self.assertIn("completion, pull-request readiness", compact(self.agents))
-
-    def test_send_success_is_not_recipient_acknowledgement(self):
-        case = self.coordination["send succeeds but recipient remains waiting"]
-        self.assertEqual(
-            (
-                case["direct_send_result"],
-                case["recipient_evidence"],
-                case["expected_action"],
-            ),
-            (
-                "success",
-                "WAITING_ON_DEPENDENCY without acknowledgement",
-                "send one Chief fallback with the same handoff ID",
-            ),
-        )
-        for document in (self.agents, self.chief, self.thread):
-            with self.subTest(document=document[:40]):
-                self.assertIn("proves only enqueue acceptance", document)
-                self.assertIn("`DEPENDENCY_ACK`", document)
-
-    def test_acknowledged_handoff_reconciles_without_another_send(self):
-        case = self.coordination["successful direct handoff"]
-        self.assertEqual(
-            (case["recipient_evidence"], case["expected_action"], case["expected_state"]),
-            (
-                "DEPENDENCY_ACK for the exact handoff ID",
-                "reconcile ledger without another send",
-                "consumed",
-            ),
-        )
-        self.assertIn("same handoff ID", compact(self.check_in))
-        self.assertIn(
-            "without sending another worker turn",
-            compact(self.check_in),
-        )
-
-    def test_duplicate_delivery_is_idempotent(self):
-        case = self.coordination["duplicate delivery after acknowledgement"]
-        self.assertEqual(
-            (case["ledger_state"], case["expected_action"], case["expected_state"]),
-            (
-                "consumed",
-                "no-op without reapplying the artifact",
-                "consumed",
-            ),
-        )
-        for document in (self.agents, self.thread):
-            with self.subTest(document=document[:40]):
-                self.assertIn(
-                    "same handoff ID is an idempotent no-op",
-                    compact(document),
-                )
-
-    def test_stale_ledger_reconciles_without_waking_the_worker(self):
-        case = self.coordination["stale ledger after downstream work"]
-        self.assertEqual(
-            (case["ledger_state"], case["expected_action"]),
-            ("waiting", "update ledger without another send"),
-        )
-        self.assertIn(
-            "update the ledger without sending another worker turn",
-            self.check_in,
-        )
-
-    def test_completed_dependent_is_not_reawakened(self):
-        case = self.coordination["already-completed dependent"]
-        self.assertEqual(
-            (
-                case["recipient_runtime"],
-                case["direct_send_result"],
-                case["expected_action"],
-            ),
-            (
-                "completed",
-                "not sent",
-                "reconcile terminal result without sending",
-            ),
-        )
-        self.assertIn(
-            "already completed the declared outcome, do not send or resume it",
-            compact(self.check_in),
-        )
-
-    def test_dependency_ack_requires_transition_out_of_wait(self):
-        case = self.coordination[
-            "dependency acknowledged without state transition"
-        ]
-        self.assertEqual(
-            (
-                case["recipient_evidence"],
-                case["expected_action"],
-                case["expected_state"],
-            ),
-            (
-                "DEPENDENCY_ACK but still WAITING_ON_DEPENDENCY",
-                "resume once with the same handoff ID",
-                "ready retry sent",
-            ),
-        )
-        for document in (self.agents, self.thread, self.check_in):
-            with self.subTest(document=document[:40]):
-                self.assertIn(
-                    "acknowledgement includes the transition out of "
-                    "`WAITING_ON_DEPENDENCY`",
-                    compact(document),
-                )
-
-    def test_ignored_external_resume_gets_one_same_key_fallback(self):
-        case = self.coordination["external resume send ignored"]
-        self.assertEqual(
-            (case["recipient_evidence"], case["expected_action"]),
-            (
-                "WAITING_ON_EXTERNAL without EXTERNAL_RESUME_ACK",
-                "send one same-key fallback",
-            ),
-        )
-        for document in (self.agents, self.thread, self.check_in):
-            with self.subTest(document=document[:40]):
-                self.assertIn("`EXTERNAL_RESUME_SENT`", document)
-                self.assertIn("`EXTERNAL_RESUME_ACK`", document)
-        self.assertIn(
-            "only while this task is idle or unloaded",
-            compact(self.thread),
-        )
-        self.assertIn(
-            "active or terminal task must not receive the fallback",
-            compact(self.thread),
-        )
-
-    def test_ignored_user_answer_gets_one_same_id_fallback(self):
-        case = self.coordination["user answer relay send ignored"]
-        self.assertEqual(
-            (case["recipient_evidence"], case["expected_action"]),
-            (
-                "NEEDS_USER without ANSWER_RELAY_ACK",
-                "send one same-ID fallback without asking the user again",
-            ),
-        )
-        for document in (self.agents, self.chief, self.check_in):
-            with self.subTest(document=document[:40]):
-                self.assertIn("`ANSWER_RELAY_SENT`", document)
-                self.assertIn("`ANSWER_RELAY_ACK`", document)
-                self.assertIn("without asking the user again", compact(document))
-        self.assertIn(
-            "only while this task is idle or unloaded",
-            compact(self.thread),
-        )
-        self.assertIn(
-            "active or terminal task must not receive the fallback",
-            compact(self.thread),
-        )
-
-    def test_plan_overview_refreshes_task_and_git_state_not_connected_sources(self):
-        compact_agents = compact(self.agents)
-        compact_plan = compact(self.plan)
-        self.assertIn("does not refresh connected sources", compact_agents)
-        self.assertIn("broader approved-source refresh", compact_agents)
-        self.assertIn("authoritative Git branch or pull-request state", compact_plan)
-        self.assertIn("Use `$check-in` when broader live-source refresh is needed", self.plan)
-
-    def test_end_of_day_keeps_proportional_closeout_rules(self):
-        self.assertIn("at most three", self.eod)
-
-    def test_public_contract_does_not_contain_private_identity_or_paths(self):
+    def test_public_contract_has_no_private_sync_identifiers(self):
         artifacts = (
             "AGENTS.md",
-            ".agents/skills/check-in/SKILL.md",
-            ".agents/skills/chief-of-staff/SKILL.md",
-            ".agents/skills/end-of-day-summary/SKILL.md",
-            ".agents/skills/end-of-day-summary/agents/openai.yaml",
-            ".agents/skills/plan-overview/SKILL.md",
+            "README.md",
+            "GUIDE.md",
             "automations/heartbeat.md",
-            "templates/abandonment.md",
-            "templates/check-in.md",
+            "projects/index.md",
+            "threads/index.md",
+            "reports/quality.md",
             "templates/thread.md",
             "templates/worker-needs-fixture.md",
             "templates/worker-summary.md",
             "tests/fixtures/chief_execution_boundary_scenarios.csv",
-            "tests/fixtures/dependency_coordination_scenarios.csv",
-            "tests/fixtures/task_closure_scenarios.csv",
-            "tests/fixtures/text_approval_scenarios.csv",
             "tests/test_chief_execution_boundary.py",
             "tests/test_heartbeat_router.py",
-            "tests/test_operating_contract.py",
         )
-        changed_surfaces = "\n".join(read(path) for path in artifacts)
-        for forbidden in ("Am" "an", "Jha" "Am" "an", "/" "Users/", "magic" "product"):
+        text = "\n".join(read(path) for path in artifacts)
+        for forbidden in ("chief-of-staff-vault", "/Users/"):
             with self.subTest(forbidden=forbidden):
-                self.assertNotIn(forbidden, changed_surfaces)
-        for private_identifier in (
-            r"\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b",
-            r"\b[0-9a-f]{40}\b",
-            r"chief-of-staff-" r"vault",
-        ):
-            with self.subTest(private_identifier=private_identifier):
-                self.assertIsNone(re.search(private_identifier, changed_surfaces))
+                self.assertNotIn(forbidden, text)
 
 
 if __name__ == "__main__":

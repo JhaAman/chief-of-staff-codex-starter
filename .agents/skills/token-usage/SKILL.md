@@ -27,4 +27,4 @@ only exact model names. Keep unknown or stale entries unpriced, including in
 every table and comparison.
 
 Never expose prompts, responses, task titles, IDs, source content, rollout
-paths, credentials, or local account details.
+paths, credentials, local account details, or private ledger content.

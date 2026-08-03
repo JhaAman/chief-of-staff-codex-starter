@@ -1,41 +1,17 @@
 ---
 name: end-of-day-summary
-description: Produce a concise weekday closeout from one bounded refresh of approved Chief of Staff sources and worker state.
+description: Produce a concise weekday closeout from a bounded Chief refresh.
 ---
 
 # End-of-Day Summary
 
-Before any live connector inspection, read `AGENTS.md`, `PROFILE.md`,
-`projects/index.md`, `sources/index.md`, relevant notes, and `threads/index.md`.
-Inspect only source scopes listed in `sources/index.md` and relevant to active
-work. Then perform one immediate bounded refresh of relevant approved Codex
-tasks and authoritative Git branch or pull-request state before producing a closeout.
-Treat the ledger, project notes, plans, and summaries as caches. If refresh is
-unavailable, label the result `Last known`, state when it was checked, and name
-the missing source.
+Read the same approved context as `$check-in`, refresh relevant live task and
+branch or PR state once, and label unavailable sources `Last known`. Read
+Current Context by default; use History only for named work or dependencies.
+Never sleep, poll, or create routine user noise.
 
-After current blockers and user needs, inspect at most three recent
-terminal-looking unarchived tasks using already available evidence. Apply the
-proportional closure rule in `AGENTS.md`; runtime state alone never proves a
-task terminal. Do not reopen long transcripts, rewrite history, bulk-archive,
-or create routine user noise.
-
-Apply the dependency state machine in `AGENTS.md`: send success is only
-`DEPENDENCY_READY_SENT`; require `DEPENDENCY_ACK` or stronger exact-artifact
-use; repair one idle unacknowledged wait with the same handoff ID; never resend
-to active, acknowledged, or completed tasks; reconcile stale ledger state
-without waking workers; and resume a satisfied `WAITING_ON_EXTERNAL` condition
-once by its stable resume key.
-
-If nothing meaningful happened and nothing needs the user, produce no visible
-summary. Otherwise use only populated sections, in this order:
-
-1. `Needs you`
-2. `Ready for colleagues`
-3. `Completed`
-4. `Next`
-
-Use plain language and titled source links. Put every unresolved approval,
-input, decision, access request, or interview wait under `Needs you`. Do not
-send the summary externally without explicit approval. One immediate bounded
-refresh is enough; never sleep or poll.
+Put unresolved user needs first. Then include only populated sections in this
+order: `Needs you`, `Ready for colleagues`, `Completed`, and `Next`. Keep the
+language plain and link known tasks by recognizable title. At 18:00, update
+`reports/quality.md` only when one of its values or evidence changed; do not
+invent historical data or infer satisfaction from silence.

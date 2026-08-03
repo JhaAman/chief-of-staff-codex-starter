@@ -1,10 +1,18 @@
 # Project Registry
 
-Remove the placeholder row after onboarding.
+Create a small onboarding Active Context, then preserve other useful work in
+Supporting And Historical Context. A project row supplies routing information;
+it never authorizes a worker.
 
-| Project | State | Why it matters | Owner | Saved Codex project | Repository | Local checkout | Note | Last updated |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<project>` | `<active or paused>` | `<outcome>` | `<owner>` | `<Codex project name>` | `<host/owner/repository or none>` | `<local path or none>` | `<projects/note.md>` | `YYYY-MM-DD` |
+## Active Context
 
-Only the user can authorize a worker. A project row supplies routing
-information; it is not authorization to create a task.
+| Project | State | Why it matters | Owner | Saved Codex project | Repository | Note | Last updated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+
+## Supporting And Historical Context
+
+| Project | State | Why it matters | Owner | Saved Codex project | Repository | Note | Last updated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+
+When the user names a project outside Active Context, consult this section and
+its linked note before claiming the vault has no context.
