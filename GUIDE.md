@@ -16,7 +16,7 @@ The pinned Chief task is the front door; these files are its durable memory.
 - `projects/` — small active context plus supporting and historical notes.
 - `threads/` — one Chief-owned ledger: Current Context and History.
 - `sources/` — approved source scopes and their purpose.
-- `reports/` — proportional worker handoffs, usage, and quality signals.
+- `reports/` — proportional worker handoffs and quality signals.
 - `check-ins/` — meaningful refresh snapshots, never copied source transcripts.
 - `context-compaction-log.md` — metadata-only observability record.
 

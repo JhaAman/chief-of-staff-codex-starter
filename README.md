@@ -41,7 +41,6 @@ check-in unless you explicitly opt in to completion notification.
 - `$check-in` — refresh approved sources and current worker context.
 - `$plan-overview` — show active projects, blockers, and next actions.
 - `$end-of-day-summary` — produce a concise weekday closeout.
-- `$token-usage` — inspect privacy-safe local usage and API-rate estimates.
 
 The optional [heartbeat](automations/heartbeat.md) is inactive until you review
 and activate it. Its intended cadence is 09:00, 13:00, and 18:00 in your
